@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "dc_motor_pwm",
+  "display_name": "DC Motor PWM",
+  "summary": "Single DC motor speed channel driven by one PWM output, intended to feed a MOSFET or driver input.",
+  "hal_components": [
+    "GPIO",
+    "TIM"
+  ],
+  "template_files": [
+    "modules/dc_motor_pwm.c",
+    "modules/dc_motor_pwm.h"
+  ],
+  "resource_requests": [
+    "pwm_out:out"
+  ],
+  "notes": [
+    "Do not drive a DC motor directly from the STM32 pin; use a MOSFET or dedicated motor driver stage.",
+    "Add a flyback diode or use a driver module with built-in protection."
+  ],
+  "sources": [
+    "Generic low-side MOSFET PWM speed control pattern for small DC motors."
+  ]
+}

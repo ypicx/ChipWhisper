@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "pcf8574_i2c",
+  "display_name": "PCF8574",
+  "summary": "PCF8574 8-bit I2C I/O expander, address range 0x20-0x27.",
+  "hal_components": ["GPIO", "I2C", "DMA"],
+  "template_files": ["modules/pcf8574.c", "modules/pcf8574.h"],
+  "resource_requests": ["i2c_device"],
+  "c_init_template": [
+    "    /* PCF8574 transport ready: PCF8574_WritePort(&[[i2c_handle]], [[i2c_address_macro]], value, 100); */"
+  ],
+  "address_options": [32, 33, 34, 35, 36, 37, 38, 39],
+  "bus_kind": "i2c",
+  "notes": [
+    "The base PCF8574 address range is 0x20-0x27.",
+    "Quasi-bidirectional I/O lines need external drive planning when used as outputs."
+  ],
+  "sources": [
+    "NXP PCF8574/PCF8574A remote 8-bit I/O expander for I2C-bus datasheet"
+  ]
+}

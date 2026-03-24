@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "menu_view_ct117e_adapter",
+  "display_name": "Menu View CT117E Adapter",
+  "summary": "Graphical text render bridge that maps one MenuView instance onto the CT117E parallel LCD using 5x7 text rows.",
+  "hal_components": [],
+  "template_files": [
+    "modules/menu_view_ct117e_adapter.c",
+    "modules/menu_view_ct117e_adapter.h"
+  ],
+  "resource_requests": [],
+  "depends_on": [
+    "menu_view",
+    "ct117e_lcd_parallel"
+  ],
+  "init_priority": 80,
+  "loop_priority": 80,
+  "c_callbacks_template": [
+    "void MenuView_OnRender(const MenuView *view)",
+    "{",
+    "    char line[21];",
+    "    uint8_t row;",
+    "    if (!MenuView_Matches(view, \"[[dep_menu_view_module_name]]\")) {",
+    "        return;",
+    "    }",
+    "    for (row = 0U; row < 4U; ++row) {",
+    "        MenuViewCt117e_FormatLine(view, row, line, sizeof(line));",
+    "        CT117ELcd_WriteString5x7(",
+    "            &[[dep_ct117e_lcd_parallel_module_identifier]],",
+    "            8U,",
+    "            (uint16_t)(12U + ((uint16_t)row * 18U)),",
+    "            line,",
+    "            row == 0U ? CT117E_LCD_COLOR_YELLOW : CT117E_LCD_COLOR_GREEN,",
+    "            CT117E_LCD_COLOR_BLACK",
+    "        );",
+    "    }",
+    "}"
+  ],
+  "notes": [
+    "Override MenuViewCt117e_FormatLine(...) to change what each text row shows while keeping the render loop reusable.",
+    "Use only one MenuView render adapter per MenuView instance, because each adapter owns the global MenuView_OnRender callback."
+  ],
+  "sources": [
+    "Menu rendering on the CT117E 240x320 parallel LCD using the built-in 5x7 helper."
+  ]
+}

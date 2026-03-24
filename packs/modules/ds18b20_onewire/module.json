@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "ds18b20_onewire",
+  "display_name": "DS18B20 Temperature Sensor (One-Wire)",
+  "summary": "DS18B20 digital temperature sensor with one-wire interface. Measures -55°C to +125°C with ±0.5°C accuracy (in -10~+85°C range).",
+  "template_files": [
+    "modules/ds18b20.c",
+    "modules/ds18b20.h"
+  ],
+  "hal_components": ["GPIO", "TIM"],
+  "resource_requests": [
+    "gpio_io:dq"
+  ],
+  "notes": [
+    "Requires 4.7kΩ external pull-up resistor on DQ line.",
+    "Conversion time: 750ms at 12-bit resolution (default).",
+    "Parasitic power mode not recommended; use VDD supply.",
+    "One-wire timing is critical; disable interrupts during bit-level I/O."
+  ],
+  "sources": [
+    "Maxim DS18B20 datasheet",
+    "One-Wire protocol reference"
+  ],
+  "app_logic_snippets": {
+    "init": "DS18B20_Init();",
+    "loop": "DS18B20_StartConversion();\nHAL_Delay(750);  /* wait for conversion */\nfloat temp = DS18B20_ReadTemperature();\nif (temp > -55.0f) {\n    /* valid reading */\n}",
+    "api_summary": "DS18B20_Init() DS18B20_StartConversion() DS18B20_ReadTemperature() DS18B20_ReadROM(rom_code) DS18B20_IsPresent()",
+    "notes": "Call StartConversion() then wait 750ms before ReadTemperature(). Returns -999.0f on read error. For multiple sensors on one bus, use ReadROM() to get 64-bit address."
+  }
+}

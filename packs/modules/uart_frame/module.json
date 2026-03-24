@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "uart_frame",
+  "display_name": "UART Frame Receiver",
+  "summary": "Line-oriented UART frame receiver that accumulates bytes cooperatively and emits parsed frames through a weak callback.",
+  "hal_components": [
+    "GPIO",
+    "USART"
+  ],
+  "template_files": [
+    "modules/uart_frame.c",
+    "modules/uart_frame.h"
+  ],
+  "resource_requests": [
+    "uart_port"
+  ],
+  "depends_on": [
+    "soft_timer"
+  ],
+  "init_priority": -20,
+  "loop_priority": -60,
+  "c_top_template": [
+    "static UartFramePort [[module_identifier]];"
+  ],
+  "c_init_template": [
+    "    UartFrame_Init(&[[module_identifier]], \"[[module_name]]\", &[[uart_handle]]);",
+    "    UartFrame_SetLineMode(&[[module_identifier]], [[option_delimiter_ascii|10]], [[option_idle_gap_ms|20]]);"
+  ],
+  "c_loop_template": [
+    "    UartFrame_Process(&[[module_identifier]], SoftTimer_GetMillis());"
+  ],
+  "notes": [
+    "This middleware uses cooperative polling with HAL_UART_Receive(..., timeout=0), which is suitable for low-rate command and telemetry streams.",
+    "Handle parsed frames by overriding UartFrame_OnFrame(...) in AppCallbacks."
+  ],
+  "sources": [
+    "Common delimiter-plus-idle-gap UART framing pattern for bare-metal STM32 firmware."
+  ]
+}

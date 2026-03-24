@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "pid_controller",
+  "display_name": "PID Controller",
+  "summary": "Configurable PID controller algorithm for closed-loop control applications.",
+  "category": "algorithm",
+  "hal_components": [],
+  "template_files": ["modules/pid.c", "modules/pid.h"],
+  "resource_requests": [],
+  "depends_on": [],
+  "init_priority": 0,
+  "loop_priority": 0,
+  "c_top_template": [],
+  "c_init_template": [
+    "    PID_Init(&[[module_identifier]], APP_PID_KP, APP_PID_KI, APP_PID_KD, APP_PID_OUT_MIN, APP_PID_OUT_MAX);"
+  ],
+  "c_loop_template": [],
+  "c_callbacks_template": [],
+  "configurable_params": {
+    "kp": { "type": "float", "default": 1.0, "description": "Proportional gain" },
+    "ki": { "type": "float", "default": 0.1, "description": "Integral gain" },
+    "kd": { "type": "float", "default": 0.01, "description": "Derivative gain" },
+    "output_min": { "type": "float", "default": 0.0, "description": "Minimum output clamp" },
+    "output_max": { "type": "float", "default": 100.0, "description": "Maximum output clamp" },
+    "sample_time_ms": { "type": "int", "default": 10, "description": "Control loop sample period in milliseconds" }
+  },
+  "app_logic_snippets": {
+    "basic_control_loop": {
+      "description": "Basic PID control loop: read sensor → compute → apply actuator",
+      "init": [
+        "PID_Controller pid;",
+        "PID_Init(&pid, APP_PID_KP, APP_PID_KI, APP_PID_KD, APP_PID_OUT_MIN, APP_PID_OUT_MAX);"
+      ],
+      "periodic_task": {
+        "every_ms": 10,
+        "run": [
+          "float measured = read_sensor_value();",
+          "float output = PID_Compute(&pid, setpoint, measured);",
+          "apply_actuator((uint16_t)output);"
+        ]
+      },
+      "key_apis": ["PID_Init", "PID_Compute", "PID_Reset", "PID_SetTunings", "PID_SetOutputLimits"]
+    }
+  },
+  "notes": [
+    "This is a software-only algorithm module with no hardware resource requirements.",
+    "PID parameters (Kp, Ki, Kd) MUST be tuned on real hardware — defaults are starting points only.",
+    "The integral term includes anti-windup clamping based on output limits.",
+    "Call PID_Compute at a fixed rate for stable control behavior."
+  ],
+  "sources": [
+    "Standard PID control algorithm with anti-windup",
+    "Brett Beauregard PID library design reference"
+  ]
+}

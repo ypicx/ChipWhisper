@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "kind": "scenario",
+  "scenario_id": "lanqiao_national_comprehensive",
+  "display_name": "蓝桥杯国赛：多功能数据采集与控制系统",
+  "tags": ["蓝桥杯", "竞赛", "CT117E", "国赛", "ADC", "PWM", "UART", "EEPROM", "RTC", "STM32G431"],
+  "description": "模拟蓝桥杯国赛级别的综合项目。集成双ADC采集(R37+R38电位器)、PWM输出控制、频率测量、串口双向通信、EEPROM参数存储、RTC定时采集、多界面LCD显示和LED状态指示。要求实现完整的状态机控制逻辑、数据滤波处理和异常报警机制。此场景覆盖国赛全部核心考点。",
+  "chip": "STM32G431RBT6",
+  "board": "CT117E",
+  "required_modules": [
+    {"kind": "ct117e_lcd_parallel", "name": "lcd", "summary": "LCD显示6个界面：主页/ADC数据/PWM控制/频率测量/串口日志/系统设置"},
+    {"kind": "ct117e_led_latch", "name": "led", "summary": "8个LED分别指示：运行状态/ADC报警/PWM使能/串口活动/频率有效/EEPROM读写/RTC秒闪/错误"},
+    {"kind": "ct117e_key_scan", "name": "key", "summary": "4按键：B1界面切换，B2功能选择，B3参数+调节，B4参数-调节(长按快速)"},
+    {"kind": "at24c02_i2c", "name": "eeprom", "summary": "AT24C02：存储系统参数/报警阈值/校准系数"},
+    {"kind": "uart_debug", "name": "uart1", "summary": "USART1：接收上位机指令+定时上报采集数据"}
+  ],
+  "peripherals": [
+    {"type": "ADC", "channel": "ADC1_CH13", "pin": "PB2", "purpose": "R37电位器采集，映射到PWM占空比控制"},
+    {"type": "ADC", "channel": "ADC2_CH13", "pin": "PB15", "purpose": "R38电位器采集，设置报警上下限阈值"},
+    {"type": "PWM", "timer": "TIM2_CH2", "pin": "PA1", "purpose": "PWM输出，频率/占空比均可调"},
+    {"type": "INPUT_CAPTURE", "timer": "TIM3_CH2", "pin": "PA7", "purpose": "输入捕获测量外部频率"},
+    {"type": "RTC", "instance": "RTC", "purpose": "实时时钟，定时采集任务触发"},
+    {"type": "I2C", "instance": "I2C3", "pins": ["PB6_SCL", "PB7_SDA"], "purpose": "I2C连接AT24C02"},
+    {"type": "UART", "instance": "USART1", "pins": ["PA9", "PA10"], "purpose": "串口通信，波特率9600"},
+    {"type": "GPIO", "pin": "PC15", "purpose": "蜂鸣器报警"}
+  ],
+  "requirements": [
+    "系统启动后进入主页界面，显示时间+系统状态摘要",
+    "双ADC通道采集，支持移动平均滤波(窗口大小8)",
+    "ADC数据超过阈值范围时蜂鸣器报警+LD2闪烁",
+    "PWM输出频率1kHz~20kHz可调(步进1kHz)，占空比由R37控制",
+    "PA7输入捕获测量频率，结果显示在频率界面",
+    "串口指令格式: #TYPE:VALUE\\r\\n，支持SET_FREQ/SET_DUTY/QUERY_ALL/SAVE_PARAM",
+    "EEPROM存储4组参数：报警上限/报警下限/默认频率/默认占空比，上电恢复",
+    "RTC每10秒触发一次数据采集记录(存入RAM缓冲区，最多保存60条)",
+    "按键支持短按和长按(>1s)两种操作模式",
+    "所有按键操作有200ms消抖和重复触发保护"
+  ],
+  "acceptance": {
+    "uart_contains": ["V1:", "V2:", "FREQ:", "PWM:", "#ACK"],
+    "notes": [
+      "状态机至少5个状态：IDLE/ADC_SAMPLE/PWM_CTRL/FREQ_MEAS/UART_PROC",
+      "移动平均滤波窗口大小8",
+      "EEPROM参数区起始地址0x00，每参数4字节",
+      "按键消抖200ms",
+      "此题难度对应蓝桥杯国赛水平"
+    ]
+  }
+}

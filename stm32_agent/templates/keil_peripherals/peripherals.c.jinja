@@ -1,0 +1,33 @@
+/*
+ * 文件说明：
+ * 1. 本文件集中放置 HAL 外设句柄、GPIO 初始化函数和各类 MX_* 初始化函数。
+ * 2. 具体初始化内容由规划结果自动生成。
+ * 3. 若需保留自定义底层代码，请优先使用 USER CODE 区域。
+ */
+
+#include "peripherals.h"
+
+/* 仅在 peripherals.c 需要的附加头文件，请放在下面的用户代码区。 */
+/* USER CODE BEGIN PeripheralsIncludes */
+/* USER CODE END PeripheralsIncludes */
+
+{% if handle_definitions %}
+/* HAL 外设句柄定义区。所有句柄在这里统一实例化。 */
+{% for line in handle_definitions %}
+{{ line }}
+{% endfor %}
+
+{% endif %}
+{{ user_code_top }}
+
+/* GPIO 初始化：包含普通输入输出引脚以及复用功能引脚。 */
+{{ gpio_init_block }}
+/* 外设初始化：按规划结果依次初始化串口、总线、定时器等外设。 */
+{% for block in init_blocks %}
+{{ block }}
+{% endfor %}
+/* MSP 初始化：负责时钟使能、引脚复用、DMA/NVIC 等底层支撑配置。 */
+{% for block in msp_blocks %}
+{{ block }}
+{% endfor %}
+{{ user_code_bottom }}

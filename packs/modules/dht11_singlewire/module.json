@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "dht11_singlewire",
+  "display_name": "DHT11 Single-Wire Sensor",
+  "summary": "DHT11 temperature and humidity sensor on a single bidirectional data line.",
+  "hal_components": ["GPIO"],
+  "template_files": ["modules/dht11.h", "modules/dht11.c"],
+  "resource_requests": ["onewire_gpio"],
+  "c_init_template": [
+    "    DHT11_ReleaseBus([[dq_port_macro]], [[dq_pin_macro]]);",
+    "    /* DHT11 frame decoding still needs us-level timing in the app layer. */"
+  ],
+  "notes": [
+    "DHT11 uses a single-wire bidirectional protocol that needs microsecond timing.",
+    "This template provides the bus primitives and line-state helpers; the full timing-sensitive frame decode still belongs in the application layer."
+  ],
+  "app_logic_snippets": {
+    "read_and_log": {
+      "description": "Periodically trigger DHT11 read and log temperature/humidity",
+      "init": [
+        "DHT11_ReleaseBus([[dq_port_macro]], [[dq_pin_macro]]);"
+      ],
+      "periodic_task": {
+        "every_ms": 3000,
+        "run": [
+          "if (DHT11_StartFrame([[dq_port_macro]], [[dq_pin_macro]]) == HAL_OK) {",
+          "    /* Frame decode uses microsecond timing — see DHT11 datasheet. */",
+          "    char buf[32];",
+          "    snprintf(buf, sizeof(buf), \"DHT11 frame started OK\");",
+          "    DebugUart_WriteLine(&[[uart_handle]], buf, 100);",
+          "}"
+        ]
+      },
+      "key_apis": ["DHT11_ReleaseBus", "DHT11_StartFrame", "DHT11_ReadLine", "DHT11_DriveLow"]
+    }
+  },
+  "sources": [
+    "DHT11 datasheet in the Blue Bridge Cup STM32G4 resource package"
+  ]
+}

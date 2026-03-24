@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "rc522_spi",
+  "display_name": "MFRC522 RFID Reader (SPI)",
+  "summary": "MFRC522 RFID reader/writer module via SPI interface. Reads/writes MIFARE Classic 1K/4K cards and tags at 13.56MHz.",
+  "hal_components": ["SPI", "GPIO"],
+  "resource_requests": [
+    "spi:mosi",
+    "spi:miso",
+    "spi:sck",
+    "gpio_out:cs",
+    "gpio_out:rst"
+  ],
+  "notes": [
+    "MFRC522 operates at 3.3V; do NOT connect to 5V.",
+    "SPI clock max 10MHz; typical 5MHz.",
+    "Card detection range ~3-5cm depending on antenna.",
+    "MIFARE Classic default key A: 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF."
+  ],
+  "sources": [
+    "NXP MFRC522 datasheet",
+    "MIFARE Classic 1K specification"
+  ],
+  "app_logic_snippets": {
+    "init": "RC522_Init();\nRC522_AntennaOn();",
+    "loop": "uint8_t uid[10];\nuint8_t uid_len = 0;\nif (RC522_DetectCard(uid, &uid_len) == RC522_OK) {\n    /* card detected, uid[] contains UID */\n    uint32_t card_id = (uid[0]<<24)|(uid[1]<<16)|(uid[2]<<8)|uid[3];\n    RC522_Halt();  /* release card */\n}",
+    "api_summary": "RC522_Init() RC522_AntennaOn() RC522_AntennaOff() RC522_DetectCard(uid,len) RC522_Auth(block,key) RC522_ReadBlock(block,data) RC522_WriteBlock(block,data) RC522_Halt()",
+    "notes": "Always call RC522_Halt() after reading to release the card. Auth is required before reading/writing data blocks. Sector trailer (block 3,7,11...) contains keys; do NOT overwrite without backup."
+  }
+}

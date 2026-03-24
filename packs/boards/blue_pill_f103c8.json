@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.0",
+  "kind": "board",
+  "key": "blue_pill_f103c8",
+  "display_name": "Blue Pill (STM32F103C8T6)",
+  "summary": "Common Blue Pill-compatible STM32F103C8T6 development board.",
+  "chip": "STM32F103C8T6",
+  "reserved_pins": [],
+  "avoid_pins": [],
+  "preferred_signals": {
+    "led.control": [
+      "PC13"
+    ],
+    "can_port.rx": [
+      "PB8"
+    ],
+    "can_port.tx": [
+      "PB9"
+    ]
+  },
+  "capabilities": [
+    {
+      "key": "board_led",
+      "display_name": "On-board LED",
+      "summary": "PC13 is commonly wired to the on-board status LED on Blue Pill-compatible boards.",
+      "module_kind": "led",
+      "recommended_name": "status_led",
+      "category": "indicator",
+      "notes": [
+        "Many Blue Pill variants drive the PC13 LED as active-low."
+      ]
+    },
+    {
+      "key": "board_usb_fs_pins",
+      "display_name": "USB FS device pins",
+      "summary": "Many Blue Pill variants route PA11 and PA12 to the board USB connector, which makes USB FS device projects practical when the clone follows the common reference layout.",
+      "module_kind": "",
+      "recommended_name": "",
+      "category": "connector",
+      "notes": [
+        "Verify the exact clone wiring before relying on USB device mode."
+      ]
+    },
+    {
+      "key": "board_can_remap",
+      "display_name": "CAN remap-friendly pins",
+      "summary": "Prefer CAN1 remap on PB8 and PB9 to keep PA11 and PA12 free for USB FS on mixed-interface projects.",
+      "module_kind": "",
+      "recommended_name": "",
+      "category": "bus",
+      "notes": [
+        "External CAN transceiver hardware is still required."
+      ]
+    }
+  ],
+  "clock_profile": {
+    "summary": "Common Blue Pill clock tree using an 8 MHz HSE and PLL x9 for a 72 MHz system clock.",
+    "cpu_clock_hz": 72000000,
+    "hse_value": 8000000,
+    "hsi_value": 8000000,
+    "lsi_value": 40000,
+    "lse_value": 32768,
+    "external_clock_value": 48000,
+    "system_clock_config": [
+      "    RCC_OscInitTypeDef RCC_OscInitStruct = {0};",
+      "    RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};",
+      "",
+      "    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;",
+      "    RCC_OscInitStruct.HSEState = RCC_HSE_ON;",
+      "    RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;",
+      "    RCC_OscInitStruct.HSIState = RCC_HSI_ON;",
+      "    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;",
+      "    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;",
+      "    RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;",
+      "    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {",
+      "        Error_Handler();",
+      "    }",
+      "",
+      "    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK",
+      "                                 | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;",
+      "    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;",
+      "    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;",
+      "    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;",
+      "    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;",
+      "    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK) {",
+      "        Error_Handler();",
+      "    }"
+    ],
+    "notes": [
+      "Blue Pill variants commonly ship with an 8 MHz external crystal and run at 72 MHz via PLL x9."
+    ]
+  },
+  "notes": [
+    "Blue Pill-compatible boards commonly expose PA11 and PA12 to the USB connector, but the exact wiring depends on the vendor variant.",
+    "Many variants provide an on-board LED on PC13, often active-low."
+  ],
+  "sources": [
+    "Common STM32F103C8 Blue Pill board layout conventions"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "multi_button",
+  "display_name": "Multi-Event Button",
+  "summary": "Debounced GPIO button middleware with single-click, double-click, and long-press callbacks.",
+  "hal_components": [
+    "GPIO"
+  ],
+  "template_files": [
+    "modules/multi_button.c",
+    "modules/multi_button.h"
+  ],
+  "resource_requests": [
+    "gpio_in"
+  ],
+  "depends_on": [
+    "soft_timer"
+  ],
+  "init_priority": 20,
+  "loop_priority": 20,
+  "c_top_template": [
+    "static MultiButton [[module_identifier]];"
+  ],
+  "c_init_template": [
+    "    MultiButton_Init(&[[module_identifier]], \"[[module_name]]\", [[input_port_macro]], [[input_pin_macro]], [[option_active_low|1]]);",
+    "    MultiButton_SetTiming(&[[module_identifier]], [[option_debounce_ms|25]], [[option_long_press_ms|800]], [[option_double_click_ms|250]]);"
+  ],
+  "c_loop_template": [
+    "    MultiButton_Process(&[[module_identifier]], SoftTimer_GetMillis());"
+  ],
+  "notes": [
+    "Options can override active_low, debounce_ms, long_press_ms, and double_click_ms without editing templates.",
+    "Implement MultiButton_OnEvent(...) in AppCallbacks to keep business logic event-driven and non-blocking."
+  ],
+  "sources": [
+    "Common embedded debounce and multi-click state-machine pattern."
+  ]
+}

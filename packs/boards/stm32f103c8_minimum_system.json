@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "kind": "board",
+  "key": "stm32f103c8_minimum_system",
+  "display_name": "STM32F103C8 Minimum System Board",
+  "summary": "Generic STM32F103C8T6 minimum-system board with no assumed on-board peripherals.",
+  "chip": "STM32F103C8T6",
+  "reserved_pins": [],
+  "avoid_pins": [],
+  "preferred_signals": {},
+  "clock_profile": {
+    "summary": "Typical F103 minimum-system board using an 8 MHz HSE and PLL x9 for a 72 MHz system clock.",
+    "cpu_clock_hz": 72000000,
+    "hse_value": 8000000,
+    "hsi_value": 8000000,
+    "lsi_value": 40000,
+    "lse_value": 32768,
+    "external_clock_value": 48000,
+    "system_clock_config": [
+      "    RCC_OscInitTypeDef RCC_OscInitStruct = {0};",
+      "    RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};",
+      "",
+      "    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;",
+      "    RCC_OscInitStruct.HSEState = RCC_HSE_ON;",
+      "    RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;",
+      "    RCC_OscInitStruct.HSIState = RCC_HSI_ON;",
+      "    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;",
+      "    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;",
+      "    RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;",
+      "    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {",
+      "        Error_Handler();",
+      "    }",
+      "",
+      "    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK",
+      "                                 | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;",
+      "    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;",
+      "    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;",
+      "    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;",
+      "    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;",
+      "    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK) {",
+      "        Error_Handler();",
+      "    }"
+    ],
+    "notes": [
+      "This is the common 8 MHz crystal + PLL x9 setup used by many STM32F103C8 minimum-system boards."
+    ]
+  },
+  "notes": [
+    "This profile keeps assumptions conservative and does not reserve any extra GPIO beyond SWD by default."
+  ],
+  "sources": [
+    "Generic STM32F103C8 minimum-system board wiring pattern"
+  ]
+}

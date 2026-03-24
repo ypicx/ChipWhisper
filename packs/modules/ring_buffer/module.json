@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "ring_buffer",
+  "display_name": "Ring Buffer",
+  "summary": "Generic byte-oriented ring buffer for UART receive, logging, and producer-consumer patterns.",
+  "category": "algorithm",
+  "hal_components": [],
+  "template_files": ["modules/ring_buffer.c", "modules/ring_buffer.h"],
+  "resource_requests": [],
+  "depends_on": [],
+  "c_init_template": [
+    "    RingBuf_Init(&[[module_identifier]], [[module_identifier]]_storage, APP_RINGBUF_SIZE);"
+  ],
+  "configurable_params": {
+    "buffer_size": { "type": "int", "default": 256, "description": "Ring buffer capacity in bytes (should be power of 2)" }
+  },
+  "app_logic_snippets": {
+    "uart_rx_buffer": {
+      "description": "Use ring buffer to accumulate UART received bytes",
+      "init": [
+        "#define RX_BUF_SIZE 256",
+        "RingBuf rb;",
+        "uint8_t rb_storage[RX_BUF_SIZE];",
+        "RingBuf_Init(&rb, rb_storage, RX_BUF_SIZE);"
+      ],
+      "event_handler": {
+        "trigger": "UART RX complete callback",
+        "run": [
+          "/* In HAL_UART_RxCpltCallback: */",
+          "RingBuf_Put(&rb, rx_byte);",
+          "HAL_UART_Receive_IT(&[[uart_handle]], &rx_byte, 1);"
+        ]
+      },
+      "key_apis": ["RingBuf_Init", "RingBuf_Put", "RingBuf_Get", "RingBuf_Available", "RingBuf_Flush"]
+    }
+  },
+  "notes": [
+    "This is a software-only utility module with no hardware resource requirements.",
+    "Buffer memory is caller-provided — no dynamic allocation.",
+    "Not ISR-safe by default — use critical sections if accessing from ISR and main loop."
+  ],
+  "sources": [
+    "Standard ring buffer (circular queue) implementation"
+  ]
+}

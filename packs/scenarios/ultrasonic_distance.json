@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "kind": "scenario",
+  "scenario_id": "ultrasonic_distance",
+  "display_name": "超声波测距系统",
+  "tags": ["传感器", "显示", "毕设", "测距"],
+  "description": "HC-SR04超声波测距，LCD显示距离，超近距报警",
+  "recommended_boards": ["nucleo_f103rb", "bluepill"],
+  "modules": [
+    { "kind": "hc_sr04_gpio", "name": "distance_sensor" },
+    { "kind": "lcd1602_i2c", "name": "display" },
+    { "kind": "uart_debug", "name": "debug_port" },
+    { "kind": "led", "name": "warning_led" },
+    { "kind": "active_buzzer", "name": "warning_buzzer" }
+  ],
+  "app_logic_goal": "每500ms触发一次超声波测距，LCD第一行显示距离（cm），第二行显示状态（SAFE/WARNING/DANGER）。距离<30cm黄色警告LED闪烁，距离<10cm红色危险蜂鸣器响+LED常亮。串口输出距离数据。",
+  "requirements": [
+    "每500ms触发一次超声波测距",
+    "LCD显示距离值和安全状态",
+    "距离<30cm：WARNING状态，LED闪烁",
+    "距离<10cm：DANGER状态，蜂鸣器+LED",
+    "距离>=30cm：SAFE状态，报警解除",
+    "串口输出距离数据"
+  ],
+  "assumptions": [
+    "HC-SR04工作电压5V，信号兼容3.3V",
+    "测量范围2-400cm",
+    "声速取340m/s计算距离"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "tm1637_gpio",
+  "display_name": "TM1637",
+  "summary": "TM1637 4-digit LED display using CLK and DIO GPIO lines.",
+  "hal_components": ["GPIO"],
+  "template_files": ["modules/tm1637.c", "modules/tm1637.h"],
+  "resource_requests": ["gpio_out:clk", "gpio_out:dio"],
+  "notes": [
+    "TM1637 uses a custom two-wire timing protocol rather than standard I2C.",
+    "This template focuses on basic display writes for common 4-digit modules."
+  ],
+  "sources": [
+    "Titan Micro TM1637 LED driver datasheet"
+  ]
+}

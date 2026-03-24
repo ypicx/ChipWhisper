@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "pcf8591_i2c",
+  "display_name": "PCF8591",
+  "summary": "PCF8591 8-bit ADC/DAC expander over I2C.",
+  "hal_components": ["GPIO", "I2C", "DMA"],
+  "template_files": ["modules/pcf8591.c", "modules/pcf8591.h"],
+  "resource_requests": ["i2c_device"],
+  "address_options": [72, 73, 74, 75, 76, 77, 78, 79],
+  "bus_kind": "i2c",
+  "notes": [
+    "PCF8591 typically uses the 0x48-0x4F address range.",
+    "The first ADC read after a channel switch is a dummy conversion."
+  ],
+  "sources": [
+    "NXP PCF8591 8-bit ADC and DAC datasheet"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "led_bank_8_gpio",
+  "display_name": "8-LED GPIO Bank",
+  "summary": "Eight discrete LEDs driven by eight GPIO output pins, suitable for competition-style indicator tasks.",
+  "hal_components": [
+    "GPIO"
+  ],
+  "template_files": [
+    "modules/led_bank_8_gpio.c",
+    "modules/led_bank_8_gpio.h"
+  ],
+  "resource_requests": [
+    "gpio_out:led1",
+    "gpio_out:led2",
+    "gpio_out:led3",
+    "gpio_out:led4",
+    "gpio_out:led5",
+    "gpio_out:led6",
+    "gpio_out:led7",
+    "gpio_out:led8"
+  ],
+  "notes": [
+    "This pack models the common 8-LED bank seen on embedded training and competition boards.",
+    "If the real board uses active-low LEDs, set active_low to 1 in application code."
+  ],
+  "sources": [
+    "Common STM32 training-board LED bank wiring pattern."
+  ]
+}

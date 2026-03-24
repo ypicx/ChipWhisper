@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "ds1307_i2c",
+  "display_name": "DS1307",
+  "summary": "DS1307 real-time clock over I2C, fixed 7-bit address 0x68.",
+  "hal_components": ["GPIO", "I2C", "DMA"],
+  "template_files": ["modules/ds1307.c", "modules/ds1307.h"],
+  "resource_requests": ["i2c_device"],
+  "address_options": [104],
+  "bus_kind": "i2c",
+  "notes": [
+    "DS1307 requires a 32.768 kHz crystal and benefits from a backup battery.",
+    "The clock-halt bit in the seconds register must be cleared for normal timekeeping."
+  ],
+  "sources": [
+    "Analog Devices DS1307 serial RTC datasheet"
+  ]
+}

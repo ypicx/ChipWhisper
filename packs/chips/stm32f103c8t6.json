@@ -1,0 +1,498 @@
+{
+  "schema_version": "1.0",
+  "kind": "chip",
+  "name": "STM32F103C8T6",
+  "device_name": "STM32F103C8",
+  "vendor": "STMicroelectronics",
+  "family": "STM32F1",
+  "cpu_type": "Cortex-M3",
+  "package": "LQFP48",
+  "flash_kb": 64,
+  "ram_kb": 20,
+  "irom_start": "0x08000000",
+  "iram_start": "0x20000000",
+  "c_define": "STM32F103xB",
+  "reserved_pins": [
+    "PA13",
+    "PA14"
+  ],
+  "gpio_preference": [
+    "PC13",
+    "PB12",
+    "PB13",
+    "PB14",
+    "PB15",
+    "PA0",
+    "PA1",
+    "PA4",
+    "PB0",
+    "PB1",
+    "PA8",
+    "PA11",
+    "PA12",
+    "PB8",
+    "PB9",
+    "PA15",
+    "PB3",
+    "PB4",
+    "PB5",
+    "PA6",
+    "PA7",
+    "PA5",
+    "PA2",
+    "PA3",
+    "PB10",
+    "PB11",
+    "PB6",
+    "PB7",
+    "PA9",
+    "PA10"
+  ],
+  "adc_pins": [
+    "PA0",
+    "PA1",
+    "PA2",
+    "PA3",
+    "PA4",
+    "PA5",
+    "PA6",
+    "PA7",
+    "PB0",
+    "PB1"
+  ],
+  "adc_channels": {
+    "PA0": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_0"
+      }
+    ],
+    "PA1": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_1"
+      }
+    ],
+    "PA2": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_2"
+      }
+    ],
+    "PA3": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_3"
+      }
+    ],
+    "PA4": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_4"
+      }
+    ],
+    "PA5": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_5"
+      }
+    ],
+    "PA6": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_6"
+      }
+    ],
+    "PA7": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_7"
+      }
+    ],
+    "PB0": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_8"
+      }
+    ],
+    "PB1": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_9"
+      }
+    ]
+  },
+  "interfaces": {
+    "i2c": [
+      {
+        "option_id": "I2C1_DEFAULT",
+        "kind": "i2c",
+        "instance": "I2C1",
+        "signals": {
+          "scl": "PB6",
+          "sda": "PB7"
+        },
+        "shareable": true,
+        "notes": [
+          "STM32F103x8/xB datasheet, Table 5 default mapping"
+        ]
+      },
+      {
+        "option_id": "I2C1_REMAP",
+        "kind": "i2c",
+        "instance": "I2C1",
+        "signals": {
+          "scl": "PB8",
+          "sda": "PB9"
+        },
+        "shareable": true,
+        "notes": [
+          "STM32F103x8/xB datasheet, Table 5 remap mapping"
+        ]
+      },
+      {
+        "option_id": "I2C2_DEFAULT",
+        "kind": "i2c",
+        "instance": "I2C2",
+        "signals": {
+          "scl": "PB10",
+          "sda": "PB11"
+        },
+        "shareable": true,
+        "notes": [
+          "STM32F103x8/xB datasheet, Table 5 default mapping"
+        ]
+      }
+    ],
+    "uart": [
+      {
+        "option_id": "USART1_DEFAULT",
+        "kind": "uart",
+        "instance": "USART1",
+        "signals": {
+          "tx": "PA9",
+          "rx": "PA10"
+        },
+        "shareable": false,
+        "notes": [
+          "STM32F103x8/xB datasheet, Table 5 default mapping"
+        ]
+      },
+      {
+        "option_id": "USART1_REMAP",
+        "kind": "uart",
+        "instance": "USART1",
+        "signals": {
+          "tx": "PB6",
+          "rx": "PB7"
+        },
+        "shareable": false,
+        "notes": [
+          "STM32F103x8/xB datasheet, Table 5 remap mapping"
+        ]
+      },
+      {
+        "option_id": "USART2_DEFAULT",
+        "kind": "uart",
+        "instance": "USART2",
+        "signals": {
+          "tx": "PA2",
+          "rx": "PA3"
+        },
+        "shareable": false,
+        "notes": [
+          "STM32F103x8/xB datasheet, Table 5 default mapping"
+        ]
+      },
+      {
+        "option_id": "USART3_DEFAULT",
+        "kind": "uart",
+        "instance": "USART3",
+        "signals": {
+          "tx": "PB10",
+          "rx": "PB11"
+        },
+        "shareable": false,
+        "notes": [
+          "STM32F103x8/xB datasheet, Table 5 default mapping"
+        ]
+      }
+    ],
+    "spi": [
+      {
+        "option_id": "SPI1_DEFAULT",
+        "kind": "spi",
+        "instance": "SPI1",
+        "signals": {
+          "nss": "PA4",
+          "sck": "PA5",
+          "miso": "PA6",
+          "mosi": "PA7"
+        },
+        "shareable": true,
+        "notes": [
+          "STM32F103x8/xB datasheet, Table 5 default mapping"
+        ]
+      },
+      {
+        "option_id": "SPI2_DEFAULT",
+        "kind": "spi",
+        "instance": "SPI2",
+        "signals": {
+          "nss": "PB12",
+          "sck": "PB13",
+          "miso": "PB14",
+          "mosi": "PB15"
+        },
+        "shareable": true,
+        "notes": [
+          "STM32F103x8/xB datasheet, Table 5 default mapping"
+        ]
+      }
+    ],
+    "can": [
+      {
+        "option_id": "CAN1_DEFAULT",
+        "kind": "can",
+        "instance": "CAN1",
+        "signals": {
+          "rx": "PA11",
+          "tx": "PA12"
+        },
+        "shareable": false,
+        "notes": [
+          "STM32CubeMX MCU XML STM32F103C(8-B)Tx.xml: CAN_RX/CAN_TX on PA11/PA12."
+        ]
+      },
+      {
+        "option_id": "CAN1_REMAP",
+        "kind": "can",
+        "instance": "CAN1",
+        "signals": {
+          "rx": "PB8",
+          "tx": "PB9"
+        },
+        "shareable": false,
+        "notes": [
+          "STM32CubeMX MCU XML STM32F103C(8-B)Tx.xml: CAN_RX/CAN_TX remap on PB8/PB9."
+        ]
+      }
+    ],
+    "usb": [
+      {
+        "option_id": "USB_FS_DEFAULT",
+        "kind": "usb",
+        "instance": "USB_FS",
+        "signals": {
+          "dm": "PA11",
+          "dp": "PA12"
+        },
+        "shareable": false,
+        "notes": [
+          "STM32CubeMX MCU XML STM32F103C(8-B)Tx.xml: USB_DM/USB_DP on PA11/PA12."
+        ]
+      }
+    ],
+    "pwm": [
+      {
+        "option_id": "TIM2_CH1_PA0",
+        "kind": "pwm",
+        "instance": "TIM2_CH1",
+        "signals": {
+          "out": "PA0"
+        },
+        "shareable": false,
+        "notes": []
+      },
+      {
+        "option_id": "TIM2_CH2_PA1",
+        "kind": "pwm",
+        "instance": "TIM2_CH2",
+        "signals": {
+          "out": "PA1"
+        },
+        "shareable": false,
+        "notes": []
+      },
+      {
+        "option_id": "TIM2_CH3_PA2",
+        "kind": "pwm",
+        "instance": "TIM2_CH3",
+        "signals": {
+          "out": "PA2"
+        },
+        "shareable": false,
+        "notes": []
+      },
+      {
+        "option_id": "TIM2_CH4_PA3",
+        "kind": "pwm",
+        "instance": "TIM2_CH4",
+        "signals": {
+          "out": "PA3"
+        },
+        "shareable": false,
+        "notes": []
+      },
+      {
+        "option_id": "TIM3_CH1_PA6",
+        "kind": "pwm",
+        "instance": "TIM3_CH1",
+        "signals": {
+          "out": "PA6"
+        },
+        "shareable": false,
+        "notes": []
+      },
+      {
+        "option_id": "TIM3_CH2_PA7",
+        "kind": "pwm",
+        "instance": "TIM3_CH2",
+        "signals": {
+          "out": "PA7"
+        },
+        "shareable": false,
+        "notes": []
+      },
+      {
+        "option_id": "TIM3_CH3_PB0",
+        "kind": "pwm",
+        "instance": "TIM3_CH3",
+        "signals": {
+          "out": "PB0"
+        },
+        "shareable": false,
+        "notes": []
+      },
+      {
+        "option_id": "TIM3_CH4_PB1",
+        "kind": "pwm",
+        "instance": "TIM3_CH4",
+        "signals": {
+          "out": "PB1"
+        },
+        "shareable": false,
+        "notes": []
+      },
+      {
+        "option_id": "TIM1_CH1_PA8",
+        "kind": "pwm",
+        "instance": "TIM1_CH1",
+        "signals": {
+          "out": "PA8"
+        },
+        "shareable": false,
+        "notes": []
+      },
+      {
+        "option_id": "TIM1_CH2_PA9",
+        "kind": "pwm",
+        "instance": "TIM1_CH2",
+        "signals": {
+          "out": "PA9"
+        },
+        "shareable": false,
+        "notes": []
+      },
+      {
+        "option_id": "TIM1_CH3_PA10",
+        "kind": "pwm",
+        "instance": "TIM1_CH3",
+        "signals": {
+          "out": "PA10"
+        },
+        "shareable": false,
+        "notes": []
+      },
+      {
+        "option_id": "TIM1_CH4_PA11",
+        "kind": "pwm",
+        "instance": "TIM1_CH4",
+        "signals": {
+          "out": "PA11"
+        },
+        "shareable": false,
+        "notes": []
+      }
+    ]
+  },
+  "dma_channels": [
+    "DMA1_Channel1",
+    "DMA1_Channel2",
+    "DMA1_Channel3",
+    "DMA1_Channel4",
+    "DMA1_Channel5",
+    "DMA1_Channel6",
+    "DMA1_Channel7"
+  ],
+  "dma_request_map": {
+    "I2C1_RX": [
+      "DMA1_Channel7"
+    ],
+    "I2C1_TX": [
+      "DMA1_Channel6"
+    ],
+    "I2C2_RX": [
+      "DMA1_Channel5"
+    ],
+    "I2C2_TX": [
+      "DMA1_Channel4"
+    ],
+    "USART1_RX": [
+      "DMA1_Channel5"
+    ],
+    "USART1_TX": [
+      "DMA1_Channel4"
+    ],
+    "USART2_RX": [
+      "DMA1_Channel6"
+    ],
+    "USART2_TX": [
+      "DMA1_Channel7"
+    ],
+    "USART3_RX": [
+      "DMA1_Channel3"
+    ],
+    "USART3_TX": [
+      "DMA1_Channel2"
+    ]
+  },
+  "clock_profile": {
+    "summary": "Fallback chip-level clock profile using the internal 8 MHz HSI without PLL.",
+    "cpu_clock_hz": 8000000,
+    "hse_value": 8000000,
+    "hsi_value": 8000000,
+    "lsi_value": 40000,
+    "lse_value": 32768,
+    "external_clock_value": 48000,
+    "system_clock_config": [
+      "    RCC_OscInitTypeDef RCC_OscInitStruct = {0};",
+      "    RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};",
+      "",
+      "    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;",
+      "    RCC_OscInitStruct.HSIState = RCC_HSI_ON;",
+      "    RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;",
+      "    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;",
+      "    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {",
+      "        Error_Handler();",
+      "    }",
+      "",
+      "    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK",
+      "                                 | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;",
+      "    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;",
+      "    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;",
+      "    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;",
+      "    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;",
+      "    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK) {",
+      "        Error_Handler();",
+      "    }"
+    ],
+    "notes": [
+      "Use a board clock_profile to switch from this conservative fallback to an external crystal or higher system clock."
+    ]
+  },
+  "sources": [
+    "ST STM32F103x8/xB datasheet DS5319 Rev 20",
+    "Keil uVision command line documentation"
+  ]
+}

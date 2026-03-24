@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "mq2_adc",
+  "display_name": "MQ-2 Gas/Smoke Sensor (ADC)",
+  "summary": "MQ-2 combustible gas and smoke sensor with analog output. Detects LPG, propane, methane, alcohol, hydrogen, smoke. Output voltage proportional to gas concentration.",
+  "template_files": [
+    "modules/mq2.c",
+    "modules/mq2.h"
+  ],
+  "hal_components": ["ADC"],
+  "resource_requests": [
+    "adc:aout"
+  ],
+  "notes": [
+    "MQ-2 requires 5V heater supply and >24h burn-in for first use.",
+    "Analog output 0~5V; use voltage divider (2:1) for 3.3V ADC input.",
+    "Digital output (DO) has adjustable threshold via onboard potentiometer.",
+    "Warm-up time ~20 seconds after power-on before readings are stable."
+  ],
+  "sources": [
+    "MQ-2 semiconductor gas sensor datasheet",
+    "MQ-2 module schematic (breakout board)"
+  ],
+  "app_logic_snippets": {
+    "init": "MQ2_Init();  /* configure ADC channel */\nHAL_Delay(20000);  /* 20s warm-up */",
+    "loop": "uint16_t raw = MQ2_ReadRaw();\nfloat voltage = MQ2_ReadVoltage();\nfloat ppm = MQ2_ReadPPM();  /* approximate concentration */\nif (ppm > SMOKE_THRESHOLD_PPM) {\n    /* trigger alarm */\n}",
+    "api_summary": "MQ2_Init() MQ2_ReadRaw() MQ2_ReadVoltage() MQ2_ReadPPM() MQ2_Calibrate(clean_air_raw)",
+    "notes": "ReadPPM() uses approximate Rs/Ro curve; for accurate readings, calibrate in clean air first with MQ2_Calibrate(). SMOKE_THRESHOLD_PPM typically set to 300-1000."
+  }
+}

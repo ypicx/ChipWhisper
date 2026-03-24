@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "key_bank_4_gpio",
+  "display_name": "4-Key GPIO Bank",
+  "summary": "Four discrete buttons connected to four GPIO inputs, suitable for competition-style key scanning.",
+  "hal_components": [
+    "GPIO"
+  ],
+  "template_files": [
+    "modules/key_bank_4_gpio.c",
+    "modules/key_bank_4_gpio.h"
+  ],
+  "resource_requests": [
+    "gpio_in:key1",
+    "gpio_in:key2",
+    "gpio_in:key3",
+    "gpio_in:key4"
+  ],
+  "c_top_template": [
+    "static KeyBank4Gpio [[module_identifier]];"
+  ],
+  "c_init_template": [
+    "    {",
+    "        GPIO_TypeDef *const [[module_identifier]]_ports[4] = {",
+    "            [[key1_port_macro]],",
+    "            [[key2_port_macro]],",
+    "            [[key3_port_macro]],",
+    "            [[key4_port_macro]],",
+    "        };",
+    "        const uint16_t [[module_identifier]]_pins[4] = {",
+    "            [[key1_pin_macro]],",
+    "            [[key2_pin_macro]],",
+    "            [[key3_pin_macro]],",
+    "            [[key4_pin_macro]],",
+    "        };",
+    "        KeyBank4Gpio_Init(&[[module_identifier]], [[module_identifier]]_ports, [[module_identifier]]_pins, 1U);",
+    "    }"
+  ],
+  "notes": [
+    "This pack models the common 4-key input bank found on embedded training and competition boards.",
+    "If the real board keys are active-low, keep active_low set to 1 in application code."
+  ],
+  "sources": [
+    "Common STM32 training-board independent key wiring pattern."
+  ]
+}

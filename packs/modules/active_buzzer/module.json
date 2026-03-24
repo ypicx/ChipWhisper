@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "active_buzzer",
+  "display_name": "Active Buzzer (GPIO)",
+  "summary": "Active buzzer driven by GPIO with optional NPN transistor. Supports on/off control, timed beep, and pattern alarm.",
+  "template_files": [
+    "modules/active_buzzer.c",
+    "modules/active_buzzer.h"
+  ],
+  "hal_components": ["GPIO", "TIM"],
+  "resource_requests": [
+    "gpio_out:ctrl"
+  ],
+  "notes": [
+    "Active buzzer has built-in oscillator; just apply DC voltage to sound.",
+    "Use NPN transistor (e.g. S8050) for >20mA buzzers; STM32 GPIO max 25mA.",
+    "CT117E board buzzer is on PC15, active LOW via PNP transistor."
+  ],
+  "sources": [
+    "Generic active buzzer module datasheet"
+  ],
+  "app_logic_snippets": {
+    "init": "Buzzer_Init();",
+    "loop": "Buzzer_Beep(200);  /* 200ms single beep */\nBuzzer_Alarm(3, 100, 100);  /* 3 beeps, 100ms on, 100ms off */",
+    "api_summary": "Buzzer_Init() Buzzer_On() Buzzer_Off() Buzzer_Beep(ms) Buzzer_Alarm(count, on_ms, off_ms) Buzzer_IsActive()",
+    "notes": "Buzzer_Beep() and Buzzer_Alarm() are non-blocking; call Buzzer_Tick() in main loop to update timing. Buzzer_IsActive() returns 1 while alarm pattern is playing."
+  }
+}

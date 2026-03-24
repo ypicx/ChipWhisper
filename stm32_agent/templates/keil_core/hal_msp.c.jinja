@@ -1,0 +1,23 @@
+/*
+ * MSP 底层初始化文件：
+ * 1. 负责 HAL 全局初始化，以及各外设的底层支撑初始化。
+ * 2. 这里通常包含时钟使能、GPIO 复用、DMA 绑定和 NVIC 配置等内容。
+ */
+
+#include "main.h"
+
+/* 仅在 MSP 文件中需要的附加头文件，请放在下面的用户代码区。 */
+/* USER CODE BEGIN MspIncludes */
+/* USER CODE END MspIncludes */
+
+void HAL_MspInit(void)
+{
+    /* HAL 全局底层初始化入口。 */
+    /* USER CODE BEGIN MspInit_Pre */
+    /* USER CODE END MspInit_Pre */
+{% for line in global_msp_init_lines %}
+    {{ line }}
+{% endfor %}
+    /* USER CODE BEGIN MspInit_Post */
+    /* USER CODE END MspInit_Post */
+}

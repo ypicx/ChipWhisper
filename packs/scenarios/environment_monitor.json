@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "kind": "scenario",
+  "scenario_id": "environment_monitor",
+  "display_name": "环境监测站",
+  "tags": ["传感器", "显示", "毕设", "竞赛", "多模块"],
+  "description": "采集温湿度和光照度，OLED显示，UART日志，超阈值报警LED和蜂鸣器",
+  "recommended_boards": ["nucleo_f103rb", "bluepill"],
+  "modules": [
+    { "kind": "aht20_i2c", "name": "temp_humi_sensor" },
+    { "kind": "bh1750_i2c", "name": "light_sensor" },
+    { "kind": "ssd1306_i2c", "name": "oled_display" },
+    { "kind": "uart_debug", "name": "debug_port" },
+    { "kind": "led", "name": "alarm_led" },
+    { "kind": "active_buzzer", "name": "alarm_buzzer" }
+  ],
+  "app_logic_goal": "每2秒读取温湿度和光照度，OLED第一行显示温度，第二行显示湿度，第三行显示光照度，第四行显示报警状态。温度超过35度或光照低于10lux时LED和蜂鸣器报警。串口每次输出JSON格式日志。",
+  "requirements": [
+    "定时2秒采集温湿度(AHT20)和光照度(BH1750)",
+    "OLED分四行显示：温度、湿度、光照、报警状态",
+    "温度>35°C报警：LED亮+蜂鸣器响",
+    "光照<10lux报警：LED亮+蜂鸣器响",
+    "报警条件消除后自动解除",
+    "串口输出格式：{\"temp\":xx.x,\"humi\":xx.x,\"lux\":xx.x,\"alarm\":0/1}"
+  ],
+  "assumptions": [
+    "AHT20和BH1750可共用同一I2C总线",
+    "OLED使用SSD1306 I2C，默认地址0x3C",
+    "报警阈值硬编码，后续可扩展为可配置"
+  ]
+}

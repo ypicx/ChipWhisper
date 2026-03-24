@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "menu_view",
+  "display_name": "Menu View",
+  "summary": "Generic menu-state middleware with scheduled redraws and named input dispatch for complex embedded UIs.",
+  "hal_components": [],
+  "template_files": [
+    "modules/menu_view.c",
+    "modules/menu_view.h"
+  ],
+  "resource_requests": [],
+  "depends_on": [
+    "soft_task_scheduler"
+  ],
+  "init_priority": 40,
+  "loop_priority": 40,
+  "c_top_template": [
+    "static MenuView [[module_identifier]];"
+  ],
+  "c_init_template": [
+    "    MenuView_Init(&[[module_identifier]], \"[[module_name]]\", [[option_visible_rows|4]], [[option_refresh_ms|120]]);",
+    "    MenuView_SetPage(&[[module_identifier]], [[option_initial_page|0]], [[option_item_count|4]]);",
+    "    MenuView_BindNavigation(&[[module_identifier]], \"[[option_up_button|key_up]]\", \"[[option_down_button|key_down]]\", \"[[option_enter_button|key_ok]]\", \"[[option_back_button|key_back]]\");",
+    "    (void)SoftTaskScheduler_Add(\"[[module_name]]:render\", [[option_refresh_ms|120]], MenuView_TaskCallback, &[[module_identifier]]);"
+  ],
+  "notes": [
+    "Call MenuView_DispatchNamedInput(button->name, (uint32_t)event) from MultiButton_OnEvent(...) to route button events into the menu state machine.",
+    "Render the current page by overriding MenuView_OnRender(...), and handle enter/back/value actions in MenuView_OnCommand(...)."
+  ],
+  "sources": [
+    "Generic hierarchical embedded menu state-machine pattern."
+  ]
+}

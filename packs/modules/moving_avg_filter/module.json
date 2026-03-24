@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "moving_avg_filter",
+  "display_name": "Moving Average Filter",
+  "summary": "Fixed-window moving average filter for sensor data smoothing.",
+  "category": "algorithm",
+  "hal_components": [],
+  "template_files": ["modules/moving_avg.c", "modules/moving_avg.h"],
+  "resource_requests": [],
+  "depends_on": [],
+  "c_init_template": [
+    "    MovingAvg_Init(&[[module_identifier]], [[module_identifier]]_buf, APP_MAVG_WINDOW_SIZE);"
+  ],
+  "configurable_params": {
+    "window_size": { "type": "int", "default": 8, "description": "Number of samples in the averaging window (must be power of 2 for efficiency)" }
+  },
+  "app_logic_snippets": {
+    "smooth_sensor": {
+      "description": "Apply moving average filter to smooth noisy sensor readings",
+      "init": [
+        "#define FILTER_WINDOW 8",
+        "MovingAvg_Filter filter;",
+        "float filter_buf[FILTER_WINDOW];",
+        "MovingAvg_Init(&filter, filter_buf, FILTER_WINDOW);"
+      ],
+      "periodic_task": {
+        "every_ms": 100,
+        "run": [
+          "float raw = read_raw_sensor();",
+          "float smoothed = MovingAvg_Update(&filter, raw);",
+          "/* Use smoothed value for display or control */"
+        ]
+      },
+      "key_apis": ["MovingAvg_Init", "MovingAvg_Update", "MovingAvg_Reset", "MovingAvg_GetAverage"]
+    }
+  },
+  "notes": [
+    "This is a software-only algorithm module with no hardware resource requirements.",
+    "Buffer memory is caller-provided — no dynamic allocation.",
+    "Window size determines smoothing amount: larger = smoother but more lag."
+  ],
+  "sources": [
+    "Standard moving average algorithm"
+  ]
+}

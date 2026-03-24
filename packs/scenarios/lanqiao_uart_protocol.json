@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "kind": "scenario",
+  "scenario_id": "lanqiao_uart_protocol",
+  "display_name": "蓝桥杯：串口通信协议解析",
+  "tags": ["蓝桥杯", "竞赛", "CT117E", "UART", "LCD", "协议解析", "STM32G431"],
+  "description": "基于CT117E开发板的串口通信协议解析项目。USART1接收上位机指令(查询/设置/控制)，解析自定义帧协议并执行对应功能，LCD显示通信状态和参数，LED指示通信活动。此题型考核字符串解析、状态机、中断接收等综合能力，为蓝桥杯省赛/国赛高频考点。",
+  "chip": "STM32G431RBT6",
+  "board": "CT117E",
+  "required_modules": [
+    {"kind": "ct117e_lcd_parallel", "name": "lcd", "summary": "LCD显示：通信状态/接收数据/参数界面"},
+    {"kind": "ct117e_led_latch", "name": "led", "summary": "LED指示：LD1通信活动指示，LD2错误指示"},
+    {"kind": "ct117e_key_scan", "name": "key", "summary": "按键：界面切换/手动发送/清除统计"},
+    {"kind": "uart_debug", "name": "uart1", "summary": "USART1：接收上位机指令帧并回复响应帧"}
+  ],
+  "peripherals": [
+    {"type": "UART", "instance": "USART1", "pins": ["PA9", "PA10"], "purpose": "串口通信，波特率9600，中断接收"},
+    {"type": "TIMER", "instance": "TIM6", "purpose": "串口接收超时判断(10ms无新字节视为一帧结束)"}
+  ],
+  "requirements": [
+    "串口帧格式: #CMD:DATA\\r\\n (例如 #QUERY:VOLT\\r\\n)",
+    "支持指令: QUERY(查询ADC/参数)、SET(设置阈值/频率)、CTRL(控制LED/蜂鸣器)",
+    "收到合法指令回复 #ACK:OK\\r\\n，非法指令回复 #ACK:ERR\\r\\n",
+    "LCD显示最近5条收发记录，按键B1切换界面",
+    "使用环形缓冲区(RingBuffer)管理接收数据",
+    "统计收发帧数和错误帧数，串口定时上报统计信息",
+    "LD1每收到一帧闪烁一次，LD2收到错误帧常亮3秒"
+  ],
+  "acceptance": {
+    "uart_contains": ["#ACK:OK", "#ACK:ERR"],
+    "notes": ["串口帧解析需使用状态机", "需处理粘包和断帧", "环形缓冲区大小建议256字节"]
+  }
+}

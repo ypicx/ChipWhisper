@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "kind": "scenario",
+  "scenario_id": "lanqiao_basic",
+  "display_name": "蓝桥杯基础练习（LED+按键+LCD）",
+  "tags": ["蓝桥杯", "竞赛", "CT117E", "GPIO", "LCD"],
+  "description": "蓝桥杯嵌入式竞赛基础题型：8个LED流水灯、4个按键控制、LCD显示状态",
+  "recommended_boards": ["ct117e_m4_g431"],
+  "modules": [
+    { "kind": "ct117e_led_latch", "name": "leds" },
+    { "kind": "key_bank_4_gpio", "name": "keys" },
+    { "kind": "ct117e_lcd_parallel", "name": "lcd" },
+    { "kind": "uart_debug", "name": "debug_port" }
+  ],
+  "app_logic_goal": "LED流水灯模式：按键B1切换流水方向（左/右），B2切换流水速度（快200ms/慢500ms），B3暂停/继续，B4全部LED取反。LCD第一行显示当前模式（LEFT/RIGHT），第二行显示速度（FAST/SLOW），串口输出按键事件日志。",
+  "requirements": [
+    "8个LED实现流水灯效果",
+    "B1按键切换流水方向",
+    "B2按键切换速度档位",
+    "B3按键暂停/继续流水",
+    "B4按键全部LED取反",
+    "LCD实时显示当前模式和速度",
+    "所有按键需要去抖处理",
+    "串口输出按键事件"
+  ],
+  "assumptions": [
+    "使用CT117E-M4竞赛板",
+    "LED通过锁存器控制",
+    "按键低电平有效，需20ms去抖"
+  ]
+}

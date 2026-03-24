@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "at24c32_i2c",
+  "display_name": "AT24C32",
+  "summary": "AT24C32 I2C EEPROM with 16-bit memory address.",
+  "hal_components": ["GPIO", "I2C", "DMA"],
+  "template_files": ["modules/at24c32.c", "modules/at24c32.h"],
+  "resource_requests": ["i2c_device"],
+  "address_options": [80, 81, 82, 83, 84, 85, 86, 87],
+  "bus_kind": "i2c",
+  "simulation": {
+    "renode": {
+      "attach": [
+        {
+          "kind": "i2c_mock",
+          "interface": "i2c",
+          "model": "at24c32",
+          "name": "eeprom_mock"
+        }
+      ]
+    }
+  },
+  "app_logic_snippets": {
+    "store_and_recall": {
+      "description": "Write a byte to EEPROM and read it back for verification",
+      "init": [
+        "/* AT24C32 is ready after I2C bus init — no explicit Init call needed */"
+      ],
+      "periodic_task": {
+        "every_ms": 5000,
+        "run": [
+          "uint8_t write_val = 0x42;",
+          "AT24C32_WriteByte(&[[i2c_handle]], [[i2c_address_macro]], 0x0000, write_val, 200);",
+          "HAL_Delay(5);  /* EEPROM write cycle time */",
+          "uint8_t read_val = 0;",
+          "AT24C32_ReadByte(&[[i2c_handle]], [[i2c_address_macro]], 0x0000, &read_val, 200);",
+          "char buf[32];",
+          "snprintf(buf, sizeof(buf), \"EEPROM: W=0x%02X R=0x%02X\", write_val, read_val);",
+          "DebugUart_WriteLine(&[[uart_handle]], buf, 100);"
+        ]
+      },
+      "key_apis": ["AT24C32_WriteByte", "AT24C32_ReadByte"]
+    }
+  },
+  "notes": [
+    "AT24C32 uses a 16-bit memory address and a typical 32-byte page size.",
+    "Real boards often expose A0/A1/A2 for address selection."
+  ],
+  "sources": [
+    "Microchip 24AA32A/24LC32A serial EEPROM datasheet"
+  ]
+}

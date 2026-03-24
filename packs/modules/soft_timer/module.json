@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "soft_timer",
+  "display_name": "Software Timer",
+  "summary": "Shared non-blocking millisecond time base built on HAL_GetTick for cooperative foreground tasks.",
+  "hal_components": [],
+  "template_files": [
+    "modules/soft_timer.c",
+    "modules/soft_timer.h"
+  ],
+  "resource_requests": [],
+  "depends_on": [],
+  "init_priority": -100,
+  "loop_priority": -100,
+  "c_init_template": [
+    "    SoftTimer_Init();"
+  ],
+  "c_loop_template": [
+    "    SoftTimer_Tick();"
+  ],
+  "notes": [
+    "Use this middleware when application logic needs non-blocking periodic work instead of HAL_Delay().",
+    "SoftTimer_GetMillis() returns a loop-cached millisecond tick so multiple middleware packs can share one time base."
+  ],
+  "sources": [
+    "STM32 HAL_GetTick cooperative scheduling pattern."
+  ]
+}

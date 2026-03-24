@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "pca9685_i2c",
+  "display_name": "PCA9685",
+  "summary": "PCA9685 16-channel PWM controller over I2C.",
+  "hal_components": ["GPIO", "I2C", "DMA"],
+  "template_files": ["modules/pca9685.c", "modules/pca9685.h"],
+  "resource_requests": ["i2c_device"],
+  "address_options": [64, 65, 66, 67, 68, 69, 70, 71],
+  "bus_kind": "i2c",
+  "notes": [
+    "PCA9685 address range depends on A0-A5 pin strapping.",
+    "The prescale register should only be changed in sleep mode."
+  ],
+  "sources": [
+    "NXP PCA9685 16-channel PWM controller datasheet"
+  ]
+}

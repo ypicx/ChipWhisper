@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "kind": "scenario",
+  "scenario_id": "temp_humidity_display",
+  "display_name": "温湿度采集与LCD显示系统",
+  "tags": ["传感器", "显示", "课设", "毕设", "入门"],
+  "description": "定时采集温湿度数据，显示到LCD，通过UART输出日志，支持按键切换显示模式",
+  "recommended_boards": ["ct117e_m4_g431", "nucleo_f103rb", "bluepill"],
+  "modules": [
+    { "kind": "aht20_i2c", "name": "temp_sensor" },
+    { "kind": "lcd1602_i2c", "name": "display" },
+    { "kind": "uart_debug", "name": "debug_port" },
+    { "kind": "button", "name": "mode_button" },
+    { "kind": "led", "name": "status_led" }
+  ],
+  "app_logic_goal": "每2秒读取温湿度，格式化后显示到LCD第一行温度第二行湿度，按键切换摄氏/华氏，串口输出日志，LED每次读取闪烁一次",
+  "requirements": [
+    "定时2秒读取一次温湿度",
+    "LCD第一行显示温度，第二行显示湿度",
+    "按键按下切换摄氏/华氏显示",
+    "串口输出每次测量的结果",
+    "LED在每次读取时闪烁指示"
+  ],
+  "assumptions": [
+    "AHT20使用默认I2C地址0x38",
+    "LCD1602使用默认I2C地址0x27",
+    "系统使用HSE外部晶振"
+  ]
+}

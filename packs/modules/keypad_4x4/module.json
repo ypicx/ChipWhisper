@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "keypad_4x4",
+  "display_name": "4x4 Matrix Keypad",
+  "summary": "4x4 matrix keypad using four row outputs and four column inputs.",
+  "hal_components": [
+    "GPIO"
+  ],
+  "template_files": [
+    "modules/keypad_4x4.c",
+    "modules/keypad_4x4.h"
+  ],
+  "resource_requests": [
+    "gpio_out:row1",
+    "gpio_out:row2",
+    "gpio_out:row3",
+    "gpio_out:row4",
+    "gpio_in:col1",
+    "gpio_in:col2",
+    "gpio_in:col3",
+    "gpio_in:col4"
+  ],
+  "notes": [
+    "The template reconfigures column pins as pull-up inputs during initialization.",
+    "Rows idle high and the scanner drives one row low at a time."
+  ],
+  "sources": [
+    "Common 4x4 matrix keypad scan method: row drive plus column readback."
+  ]
+}

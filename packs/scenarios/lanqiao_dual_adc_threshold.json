@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "kind": "scenario",
+  "scenario_id": "lanqiao_dual_adc_threshold",
+  "display_name": "蓝桥杯：双ADC阈值监控与报警系统",
+  "tags": ["蓝桥杯", "竞赛", "CT117E", "ADC", "双通道", "报警", "LCD", "STM32G431"],
+  "description": "基于CT117E开发板的双ADC通道阈值监控项目。R37和R38两个电位器分别采集两路模拟电压，LCD显示实时电压值和阈值参数，支持上下限阈值设置，超限时LED+蜂鸣器联动报警，串口上报报警事件。此题型为蓝桥杯第十五届模拟题核心考点。",
+  "chip": "STM32G431RBT6",
+  "board": "CT117E",
+  "required_modules": [
+    {"kind": "ct117e_lcd_parallel", "name": "lcd", "summary": "LCD显示：数据界面(双通道电压)/阈值界面(上下限)/历史界面(报警记录)"},
+    {"kind": "ct117e_led_latch", "name": "led", "summary": "LD1: CH1超上限; LD2: CH1超下限; LD3: CH2超上限; LD4: CH2超下限; LD8: 系统运行"},
+    {"kind": "ct117e_key_scan", "name": "key", "summary": "B1界面切换，B2选择通道/参数，B3值增加，B4值减少"},
+    {"kind": "uart_debug", "name": "uart1", "summary": "USART1：实时上报电压数据和报警事件"}
+  ],
+  "peripherals": [
+    {"type": "ADC", "channel": "ADC1_CH13", "pin": "PB2", "purpose": "R37电位器采集(CH1)，0~3.3V"},
+    {"type": "ADC", "channel": "ADC2_CH13", "pin": "PB15", "purpose": "R38电位器采集(CH2)，0~3.3V"},
+    {"type": "UART", "instance": "USART1", "pins": ["PA9", "PA10"], "purpose": "串口通信，9600bps"},
+    {"type": "GPIO", "pin": "PC15", "purpose": "蜂鸣器(报警时1Hz间歇鸣叫)"},
+    {"type": "TIMER", "instance": "TIM6", "purpose": "100ms定时采集ADC"}
+  ],
+  "requirements": [
+    "双ADC通道独立采集，100ms采样周期",
+    "每通道独立设置上限阈值(0.5~3.0V)和下限阈值(0.0~2.5V)",
+    "阈值调节步进0.1V，按键B3增加B4减少",
+    "超上限: 对应LED常亮+蜂鸣器; 超下限: 对应LED闪烁(2Hz)",
+    "LCD数据界面: CH1=X.XV CH2=X.XV 实时更新",
+    "LCD历史界面: 最近5条报警记录(通道+类型+电压值)",
+    "串口格式: CH1:X.XV CH2:X.XV [ALARM:CH1_HIGH] 每500ms上报"
+  ],
+  "acceptance": {
+    "uart_contains": ["CH1:", "CH2:"],
+    "notes": ["ADC采样需软件滤波(取4次平均)", "阈值需上限>下限校验", "报警需有1秒回差防抖动"]
+  }
+}

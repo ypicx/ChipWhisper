@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "ads1115_i2c",
+  "display_name": "ADS1115",
+  "summary": "ADS1115 16-bit ADC over I2C.",
+  "hal_components": ["GPIO", "I2C", "DMA"],
+  "template_files": ["modules/ads1115.c", "modules/ads1115.h"],
+  "resource_requests": ["i2c_device"],
+  "address_options": [72, 73, 74, 75],
+  "bus_kind": "i2c",
+  "notes": [
+    "The ADS1115 supports four I2C addresses depending on ADDR pin wiring.",
+    "This template uses single-shot single-ended conversions."
+  ],
+  "sources": [
+    "Texas Instruments ADS1113/4/5 datasheet"
+  ]
+}

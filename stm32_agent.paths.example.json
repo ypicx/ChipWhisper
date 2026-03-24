@@ -1,0 +1,8 @@
+{
+  "keil_uv4_path": "D:\\Keil_v5\\UV4\\UV4.exe",
+  "keil_fromelf_path": "D:\\Keil_v5\\ARM\\ARMCLANG\\bin\\fromelf.exe",
+  "renode_exe_path": "D:\\Renode\\renode.exe",
+  "stm32cubemx_install_path": "D:\\STM32CubeMX",
+  "stm32cube_repository_path": "C:\\Users\\YOUR_NAME\\STM32Cube\\Repository",
+  "stm32cube_f1_package_path": "C:\\Users\\YOUR_NAME\\STM32Cube\\Repository\\STM32Cube_FW_F1_V1.8.7"
+}

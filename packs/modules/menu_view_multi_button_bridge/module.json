@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "menu_view_multi_button_bridge",
+  "display_name": "Menu View Multi-Button Bridge",
+  "summary": "Bridges MultiButton events into MenuView named-input dispatch and leaves an extension hook for extra button logic.",
+  "hal_components": [],
+  "template_files": [
+    "modules/menu_view_multi_button_bridge.c",
+    "modules/menu_view_multi_button_bridge.h"
+  ],
+  "resource_requests": [],
+  "depends_on": [
+    "menu_view",
+    "multi_button"
+  ],
+  "init_priority": 70,
+  "loop_priority": 70,
+  "c_callbacks_template": [
+    "void MultiButton_OnEvent(const MultiButton *button, MultiButtonEvent event)",
+    "{",
+    "    if (button == NULL) {",
+    "        return;",
+    "    }",
+    "    MenuView_DispatchNamedInput(button->name, (uint32_t)event);",
+    "    MenuViewMultiButton_AfterDispatch(button, event);",
+    "}"
+  ],
+  "notes": [
+    "This bridge consumes the global MultiButton_OnEvent callback and forwards it into MenuView_DispatchNamedInput(...).",
+    "Override MenuViewMultiButton_AfterDispatch(...) in AppCallbacks if you still need extra non-menu button behavior."
+  ],
+  "sources": [
+    "Common embedded UI glue pattern: button event callback routed into a menu state machine."
+  ]
+}

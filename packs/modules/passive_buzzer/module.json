@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "passive_buzzer",
+  "display_name": "Passive Buzzer (PWM Tone)",
+  "summary": "Passive buzzer driven by PWM for melody and tone generation. Supports frequency control for musical notes and alarm tones.",
+  "hal_components": ["TIM"],
+  "resource_requests": [
+    "pwm_out:ctrl"
+  ],
+  "notes": [
+    "Passive buzzer has no built-in oscillator; must drive with square wave (PWM).",
+    "Frequency determines tone pitch: C4=262Hz, D4=294Hz, E4=330Hz, etc.",
+    "50% duty cycle for maximum volume.",
+    "Use NPN transistor for buzzers rated above 20mA."
+  ],
+  "sources": [
+    "Generic passive buzzer module datasheet"
+  ],
+  "app_logic_snippets": {
+    "init": "PassiveBuzzer_Init();",
+    "loop": "PassiveBuzzer_Tone(1000, 200);  /* 1kHz for 200ms */\nPassiveBuzzer_PlayNote(NOTE_C4, 500);  /* middle C for 500ms */\nPassiveBuzzer_PlayMelody(alarm_melody, melody_len);",
+    "api_summary": "PassiveBuzzer_Init() PassiveBuzzer_Tone(freq_hz, duration_ms) PassiveBuzzer_PlayNote(note, duration_ms) PassiveBuzzer_PlayMelody(notes, len) PassiveBuzzer_Stop() PassiveBuzzer_Tick()",
+    "notes": "Common note frequencies: C4=262 D4=294 E4=330 F4=349 G4=392 A4=440 B4=494 C5=523. PlayMelody() is non-blocking; call Tick() in main loop."
+  }
+}

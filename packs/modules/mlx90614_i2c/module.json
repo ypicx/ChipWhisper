@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "mlx90614_i2c",
+  "display_name": "MLX90614",
+  "summary": "MLX90614 non-contact infrared thermometer over SMBus/I2C.",
+  "hal_components": ["GPIO", "I2C", "DMA"],
+  "template_files": ["modules/mlx90614.c", "modules/mlx90614.h"],
+  "resource_requests": ["i2c_device"],
+  "address_options": [90],
+  "bus_kind": "i2c",
+  "notes": [
+    "Most MLX90614 modules use the default 7-bit address 0x5A.",
+    "The raw word value converts to Kelvin with a 0.02 K LSB."
+  ],
+  "sources": [
+    "Melexis MLX90614 infrared thermometer datasheet"
+  ]
+}

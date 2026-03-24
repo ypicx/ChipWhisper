@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "kind": "scenario",
+  "scenario_id": "lanqiao_adc_pwm",
+  "display_name": "蓝桥杯：ADC采集与PWM输出综合",
+  "tags": ["蓝桥杯", "竞赛", "CT117E", "ADC", "PWM", "LCD", "STM32G431"],
+  "description": "基于CT117E开发板的ADC采集+PWM输出综合项目。通过R37电位器调节PWM占空比(PA1输出,频率4kHz/8kHz可切换)，R38电位器设置阈值，LCD实时显示ADC电压值和PWM参数，按键切换频率和显示界面，超阈值LED报警。此题型为蓝桥杯第十四届省赛核心考点。",
+  "chip": "STM32G431RBT6",
+  "board": "CT117E",
+  "required_modules": [
+    {"kind": "ct117e_lcd_parallel", "name": "lcd", "summary": "LCD并口显示：数据界面/参数界面/统计界面切换"},
+    {"kind": "ct117e_led_latch", "name": "led", "summary": "LED指示灯：通过74HC573锁存器控制8个LED，报警和模式指示"},
+    {"kind": "ct117e_key_scan", "name": "key", "summary": "4个独立按键：界面切换/频率切换/参数调节/锁定解锁"},
+    {"kind": "uart_debug", "name": "uart1", "summary": "USART1串口：定时上报ADC数据和PWM状态"}
+  ],
+  "peripherals": [
+    {"type": "ADC", "channel": "ADC1_CH13", "pin": "PB2", "purpose": "R37电位器模拟电压采集(0~3.3V)，用于调节PWM占空比"},
+    {"type": "ADC", "channel": "ADC2_CH13", "pin": "PB15", "purpose": "R38电位器模拟电压采集，用于设置报警阈值"},
+    {"type": "PWM", "timer": "TIM2_CH2", "pin": "PA1", "purpose": "PWM信号输出，频率4kHz/8kHz可切换，占空比由R37控制"},
+    {"type": "UART", "instance": "USART1", "pins": ["PA9", "PA10"], "purpose": "串口通信，波特率9600"}
+  ],
+  "requirements": [
+    "LCD分三个界面：数据界面(实时电压+PWM参数)、参数界面(阈值设置)、统计界面(最大/最小/平均值)",
+    "B1按键切换显示界面，B2按键切换PWM频率(4kHz↔8kHz)",
+    "B3按键锁定/解锁参数，B4按键确认参数",
+    "R37电位器电压映射到PWM占空比(10%~90%)",
+    "R38电位器电压设置报警阈值，超阈值时LD1闪烁",
+    "串口每2秒上报一次：电压值+PWM频率+占空比"
+  ],
+  "acceptance": {
+    "uart_contains": ["V:", "PWM:", "Duty:"],
+    "notes": ["LCD应显示三个界面", "PWM频率应在4kHz或8kHz", "ADC电压精度±0.1V"]
+  }
+}

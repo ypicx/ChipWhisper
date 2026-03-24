@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "ct117e_led_latch",
+  "display_name": "CT117E Board LED Latch",
+  "summary": "Board-specific 8-LED latch helper for the CT117E-M4 platform, using fixed data pins PC8-PC15 and a latch-enable control pin.",
+  "hal_components": [
+    "GPIO"
+  ],
+  "template_files": [
+    "modules/ct117e_led_latch.h",
+    "modules/ct117e_led_latch.c"
+  ],
+  "resource_requests": [
+    "gpio_out:latch"
+  ],
+  "c_top_template": [
+    "static CT117ELedLatch [[module_identifier]];"
+  ],
+  "c_init_template": [
+    "    CT117ELedLatch_Init(&[[module_identifier]], [[latch_port_macro]], [[latch_pin_macro]], 1U);"
+  ],
+  "notes": [
+    "This module targets the on-board SN74HC573 LED bank on CT117E-M4.",
+    "The LED data bus is fixed to PC8-PC15 and shares the LCD high-byte data bus on the official board.",
+    "The planner only allocates the latch signal because the board wiring fixes the data bus."
+  ],
+  "sources": [
+    "CT117E_M4_SCH.pdf",
+    "CT117E-M4 product manual PDF"
+  ]
+}

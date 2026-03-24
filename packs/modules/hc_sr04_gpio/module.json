@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "hc_sr04_gpio",
+  "display_name": "HC-SR04",
+  "summary": "HC-SR04 ultrasonic ranging module using TRIG and ECHO GPIO signals.",
+  "hal_components": ["GPIO"],
+  "template_files": ["modules/hc_sr04.c", "modules/hc_sr04.h"],
+  "resource_requests": ["gpio_out:trig", "gpio_in:echo"],
+  "notes": [
+    "TRIG should receive a short positive pulse, while ECHO is a return pulse whose width represents distance.",
+    "Accurate distance calculation still requires a microsecond timing source in the application layer."
+  ],
+  "sources": [
+    "HC-SR04 ultrasonic sensor user guide"
+  ]
+}

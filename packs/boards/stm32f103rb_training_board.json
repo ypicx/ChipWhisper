@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "kind": "board",
+  "key": "stm32f103rb_training_board",
+  "display_name": "STM32F103RB Training Board",
+  "summary": "Conservative board profile for an STM32F103RBT6 training platform.",
+  "chip": "STM32F103RBT6",
+  "reserved_pins": [],
+  "avoid_pins": [],
+  "preferred_signals": {},
+  "notes": [
+    "This profile intentionally keeps pin assumptions conservative because board-level fixed wiring differs across training kits and expansion boards.",
+    "Use explicit module pin options when your real training board has fixed LED, key, RTC, ADC, buzzer, or display wiring.",
+    "STM32F103RBT6 has been widely used on older embedded training platforms, while many newer boards have moved to STM32G431RBT6."
+  ],
+  "sources": [
+    "Legacy STM32F103RBT6 embedded training platform references",
+    "Training material sets that include both STM32F103RBT6 and STM32G431RBT6 startup references"
+  ]
+}

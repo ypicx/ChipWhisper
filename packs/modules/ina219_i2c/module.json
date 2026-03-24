@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "ina219_i2c",
+  "display_name": "INA219",
+  "summary": "INA219 current and bus-voltage monitor over I2C.",
+  "hal_components": ["GPIO", "I2C", "DMA"],
+  "template_files": ["modules/ina219.c", "modules/ina219.h"],
+  "resource_requests": ["i2c_device"],
+  "address_options": [64, 65, 68, 69],
+  "bus_kind": "i2c",
+  "notes": [
+    "Common breakout boards expose a few selectable addresses depending on A0 and A1 strap resistors.",
+    "The current calculation depends on the shunt resistor and calibration register."
+  ],
+  "sources": [
+    "Texas Instruments INA219 datasheet"
+  ]
+}

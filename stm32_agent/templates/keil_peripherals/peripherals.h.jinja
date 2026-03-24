@@ -1,0 +1,20 @@
+#ifndef __PERIPHERALS_H
+#define __PERIPHERALS_H
+
+/* 外设头文件：声明 HAL 句柄和所有 MX_* 初始化函数。 */
+
+#include "main.h"
+
+{% if handle_declarations %}
+/* HAL 句柄声明区。 */
+{% for line in handle_declarations %}
+{{ line }}
+{% endfor %}
+
+{% endif %}
+/* 外设初始化函数声明区。 */
+{% for line in function_declarations %}
+{{ line }}
+{% endfor %}
+
+#endif

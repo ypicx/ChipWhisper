@@ -1,0 +1,218 @@
+{
+  "schema_version": "1.0",
+  "kind": "board",
+  "key": "ct117e_m4_g431",
+  "display_name": "CT117E-M4 (STM32G431RBT6)",
+  "summary": "Board profile for the CT117E-M4 STM32G431RBT6 development platform.",
+  "chip": "STM32G431RBT6",
+  "reserved_pins": [
+    "PB0",
+    "PB1",
+    "PB2",
+    "PB14",
+    "PD2",
+    "PA8",
+    "PB5",
+    "PB8",
+    "PB9",
+    "PC0",
+    "PC1",
+    "PC2",
+    "PC3",
+    "PC4",
+    "PC5",
+    "PC6",
+    "PC7",
+    "PC8",
+    "PC9",
+    "PC10",
+    "PC11",
+    "PC12",
+    "PC13",
+    "PC14",
+    "PC15"
+  ],
+  "avoid_pins": [],
+  "preferred_signals": {
+    "*.scl": [
+      "PB6"
+    ],
+    "*.sda": [
+      "PB7"
+    ],
+    "ct117e_lcd_parallel.data0": [
+      "PC0"
+    ],
+    "ct117e_lcd_parallel.data1": [
+      "PC1"
+    ],
+    "ct117e_lcd_parallel.data2": [
+      "PC2"
+    ],
+    "ct117e_lcd_parallel.data3": [
+      "PC3"
+    ],
+    "ct117e_lcd_parallel.data4": [
+      "PC4"
+    ],
+    "ct117e_lcd_parallel.data5": [
+      "PC5"
+    ],
+    "ct117e_lcd_parallel.data6": [
+      "PC6"
+    ],
+    "ct117e_lcd_parallel.data7": [
+      "PC7"
+    ],
+    "ct117e_lcd_parallel.data8": [
+      "PC8"
+    ],
+    "ct117e_lcd_parallel.data9": [
+      "PC9"
+    ],
+    "ct117e_lcd_parallel.data10": [
+      "PC10"
+    ],
+    "ct117e_lcd_parallel.data11": [
+      "PC11"
+    ],
+    "ct117e_lcd_parallel.data12": [
+      "PC12"
+    ],
+    "ct117e_lcd_parallel.data13": [
+      "PC13"
+    ],
+    "ct117e_lcd_parallel.data14": [
+      "PC14"
+    ],
+    "ct117e_lcd_parallel.data15": [
+      "PC15"
+    ],
+    "ct117e_lcd_parallel.cs": [
+      "PB9"
+    ],
+    "ct117e_lcd_parallel.rs": [
+      "PB8"
+    ],
+    "ct117e_lcd_parallel.wr": [
+      "PB5"
+    ],
+    "ct117e_lcd_parallel.rd": [
+      "PA8"
+    ],
+    "ct117e_led_latch.latch": [
+      "PD2"
+    ],
+    "key_bank_4_gpio.key1": [
+      "PB0"
+    ],
+    "key_bank_4_gpio.key2": [
+      "PB1"
+    ],
+    "key_bank_4_gpio.key3": [
+      "PB2"
+    ],
+    "key_bank_4_gpio.key4": [
+      "PB14"
+    ]
+  },
+  "capabilities": [
+    {
+      "key": "board_display",
+      "display_name": "板载 LCD 并口显示",
+      "summary": "复用 CT117E-M4 板载 240x320 LCD，适合菜单、状态页和参数显示。",
+      "module_kind": "ct117e_lcd_parallel",
+      "recommended_name": "board_lcd",
+      "category": "display",
+      "notes": [
+        "占用 PC0-PC15、PB9、PB8、PB5、PA8。",
+        "更适合做板上 UI、菜单和状态显示。"
+      ]
+    },
+    {
+      "key": "board_keys_4",
+      "display_name": "板载四按键",
+      "summary": "复用 CT117E-M4 板载 4 个独立按键，适合菜单导航、参数设置和模式切换。",
+      "module_kind": "key_bank_4_gpio",
+      "recommended_name": "board_keys",
+      "category": "input",
+      "notes": [
+        "固定到 PB0、PB1、PB2、PB14。",
+        "默认按低电平按下处理。"
+      ]
+    },
+    {
+      "key": "board_leds_8",
+      "display_name": "板载 8 灯锁存器",
+      "summary": "复用 CT117E-M4 板载 8 个 LED，可做状态显示、流水灯和调试输出。",
+      "module_kind": "ct117e_led_latch",
+      "recommended_name": "board_leds",
+      "category": "indicator",
+      "notes": [
+        "锁存使能脚为 PD2。",
+        "数据脚与 LCD 高 8 位共用 PC8-PC15。"
+      ]
+    },
+    {
+      "key": "board_i2c_bus",
+      "display_name": "板载 I2C 总线",
+      "summary": "板级默认 I2C 走 PB6/PB7，可优先挂 EEPROM、数字电位器和常见 I2C 传感器。",
+      "module_kind": "",
+      "recommended_name": "",
+      "category": "bus",
+      "notes": [
+        "SCL = PB6",
+        "SDA = PB7"
+      ]
+    },
+    {
+      "key": "board_eeprom",
+      "display_name": "板载 AT24C02",
+      "summary": "可直接用于参数保存、配置记忆和简单掉电存储。",
+      "module_kind": "at24c02_i2c",
+      "recommended_name": "board_eeprom",
+      "category": "storage",
+      "notes": [
+        "挂在板载 I2C 总线上。"
+      ]
+    },
+    {
+      "key": "board_digipot",
+      "display_name": "板载 MCP4017",
+      "summary": "可做数字电位器控制，适合演示可调阈值或信号调节。",
+      "module_kind": "mcp4017_i2c",
+      "recommended_name": "board_pot",
+      "category": "control",
+      "notes": [
+        "挂在板载 I2C 总线上。"
+      ]
+    },
+    {
+      "key": "board_uart_debug",
+      "display_name": "串口调试能力",
+      "summary": "优先用 USART2 做日志输出，适合作为每个项目的默认调试链路。",
+      "module_kind": "uart_debug",
+      "recommended_name": "debug",
+      "category": "debug",
+      "notes": [
+        "默认走 PA2/PA3。"
+      ]
+    }
+  ],
+  "notes": [
+    "This profile reserves the GPIO set used by the official CT117E-M4 LCD reference project, so unrelated modules will not silently steal the board LCD pins.",
+    "The profile also provides exact board-level pin preferences for the LCD parallel bus and for the board I2C bus on PB6/PB7.",
+    "The official four push-buttons are wired to PB0, PB1, PB2, and PB14, so the generic key_bank_4_gpio module can be used as the on-board key bank with active-low inputs.",
+    "The on-board 8-LED bank is driven through an SN74HC573 latch: PC8-PC15 provide the latched data bits and PD2 is the latch-enable signal.",
+    "Because the LED latch shares PC8-PC15 with the LCD high data byte, the board-specific LED helper keeps those bus pins fixed instead of reallocating them.",
+    "Keep using explicit pin options if your training setup disconnects the on-board LCD or rewires the official daughterboard resources."
+  ],
+  "sources": [
+    "CT117E-M4 product manual PDF",
+    "CT117E_M4_SCH.pdf",
+    "Official HAL LCD sample: HAL_06_LCD.ioc / lcd.c / stm32g4xx_hal_msp.c",
+    "Official I2C reference: I2C_HAL/i2c_hal.c",
+    "CT117E_M4_SCH.pdf: SN74HC573 LED latch section",
+    "CT117E_M4_SCH.pdf: B1/B2/B3/B4 push-button section"
+  ]
+}

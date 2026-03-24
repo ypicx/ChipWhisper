@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "sg90_servo",
+  "display_name": "SG90 Servo",
+  "summary": "SG90 micro servo driven by one PWM output, typically 50 Hz with pulse-width angle control.",
+  "hal_components": [
+    "GPIO",
+    "TIM"
+  ],
+  "template_files": [
+    "modules/sg90_servo.c",
+    "modules/sg90_servo.h"
+  ],
+  "resource_requests": [
+    "pwm_out:out"
+  ],
+  "c_top_template": [
+    "static Sg90Servo [[module_identifier]];"
+  ],
+  "c_init_template": [
+    "    (void)Sg90Servo_Attach(&[[module_identifier]], &[[pwm_handle]], [[pwm_channel]]);"
+  ],
+  "notes": [
+    "SG90 typically uses a 50 Hz PWM signal and expects about 0.5 ms to 2.4 ms pulse width.",
+    "Use a stable external 5V supply for the servo and connect grounds together."
+  ],
+  "sources": [
+    "Common SG90 hobby-servo control pattern: 50 Hz PWM with pulse-width angle mapping."
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "esp8266_uart",
+  "display_name": "ESP8266 WiFi Module (AT Commands)",
+  "summary": "ESP8266 WiFi module controlled via UART AT commands. Supports station mode, AP mode, TCP/UDP client and server connections.",
+  "template_files": [
+    "modules/esp8266.c",
+    "modules/esp8266.h"
+  ],
+  "hal_components": ["UART"],
+  "resource_requests": [
+    "uart:tx",
+    "uart:rx"
+  ],
+  "notes": [
+    "ESP8266 operates at 3.3V logic but needs separate 3.3V supply (>300mA peak).",
+    "Default baud rate is 115200; change to 9600 with AT+UART_DEF=9600,8,1,0,0 for easier use.",
+    "RST and CH_PD pins should be pulled HIGH for normal operation.",
+    "AT firmware version must be >= 1.3 for reliable operation."
+  ],
+  "sources": [
+    "Espressif ESP8266 AT Instruction Set documentation",
+    "ESP-01/ESP-01S module pinout reference"
+  ],
+  "app_logic_snippets": {
+    "init": "ESP8266_Init();\nESP8266_ConnectWiFi(\"SSID\", \"PASSWORD\");\nESP8266_ConnectTCP(\"192.168.1.100\", 8080);",
+    "loop": "if (ESP8266_DataAvailable()) {\n    uint16_t len = ESP8266_Read(rx_buf, sizeof(rx_buf));\n    /* process received data */\n}\nESP8266_Send(tx_buf, tx_len);",
+    "api_summary": "ESP8266_Init() ESP8266_SendAT(cmd,resp,timeout_ms) ESP8266_ConnectWiFi(ssid,pwd) ESP8266_ConnectTCP(ip,port) ESP8266_Send(data,len) ESP8266_Read(buf,max) ESP8266_DataAvailable()",
+    "notes": "All AT commands use blocking send+wait pattern. Use ESP8266_SendAT() for raw AT commands. WiFi connection may take 5-10 seconds."
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "stepper_28byj48",
+  "display_name": "28BYJ-48 Stepper Motor (ULN2003)",
+  "summary": "28BYJ-48 four-phase stepper motor driven via ULN2003 driver board. Supports full-step and half-step modes with configurable speed and direction.",
+  "template_files": [
+    "modules/stepper_28byj48.c",
+    "modules/stepper_28byj48.h"
+  ],
+  "hal_components": ["GPIO", "TIM"],
+  "resource_requests": [
+    "gpio_out:in1",
+    "gpio_out:in2",
+    "gpio_out:in3",
+    "gpio_out:in4"
+  ],
+  "notes": [
+    "28BYJ-48 needs 5V supply; do NOT power from 3.3V MCU rail.",
+    "ULN2003 driver board has built-in flyback diodes.",
+    "Full-step sequence: 4096 steps per revolution (with 1:64 gear ratio).",
+    "Minimum step delay ~2ms for reliable operation."
+  ],
+  "sources": [
+    "28BYJ-48 stepper motor datasheet",
+    "ULN2003 driver board schematic"
+  ],
+  "app_logic_snippets": {
+    "init": "Stepper_Init();",
+    "loop": "Stepper_SetSpeed(10);  /* RPM */\nStepper_Step(2048, STEPPER_CW);  /* half revolution */",
+    "api_summary": "Stepper_Init() Stepper_Step(steps, dir) Stepper_SetSpeed(rpm) Stepper_Stop()",
+    "notes": "Direction: STEPPER_CW / STEPPER_CCW. 2048 steps = 180 degrees. Call Stepper_Stop() to de-energize coils and save power."
+  }
+}

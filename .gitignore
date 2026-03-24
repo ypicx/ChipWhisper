@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Project-specific sensitive configs (contain API keys and local paths)
+stm32_agent.llm.json
+stm32_agent.paths.json
+
+# Cache
+.chipwhisper_cache/
+.pytest_cache/
+.gemini/
+
+# Generated output
+out/
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store

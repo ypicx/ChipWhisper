@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "kind": "scenario",
+  "scenario_id": "lanqiao_rtc_eeprom",
+  "display_name": "蓝桥杯：RTC实时时钟与EEPROM数据记录",
+  "tags": ["蓝桥杯", "竞赛", "CT117E", "RTC", "I2C", "EEPROM", "LCD", "STM32G431"],
+  "description": "基于CT117E开发板的RTC实时时钟+EEPROM数据记录项目。使用STM32内部RTC获取时间，LCD显示实时时钟，按键设置时间和闹钟，AT24C02 EEPROM存储配置参数和历史记录，蜂鸣器闹钟提醒。此题型综合考核RTC配置、I2C通信和非易失存储。",
+  "chip": "STM32G431RBT6",
+  "board": "CT117E",
+  "required_modules": [
+    {"kind": "ct117e_lcd_parallel", "name": "lcd", "summary": "LCD显示：时钟界面/闹钟界面/记录界面"},
+    {"kind": "ct117e_led_latch", "name": "led", "summary": "LED：LD1秒闪，LD2闹钟激活指示"},
+    {"kind": "ct117e_key_scan", "name": "key", "summary": "按键：B1界面切换，B2/B3时间调节，B4确认/取消闹钟"},
+    {"kind": "at24c02_i2c", "name": "eeprom", "summary": "AT24C02 EEPROM(0xA0)：存储闹钟设置和最近10条记录"},
+    {"kind": "uart_debug", "name": "uart1", "summary": "串口输出时间和事件日志"}
+  ],
+  "peripherals": [
+    {"type": "RTC", "instance": "RTC", "purpose": "内部RTC实时时钟，LSE 32.768kHz晶振"},
+    {"type": "I2C", "instance": "I2C3", "pins": ["PB6_SCL", "PB7_SDA"], "purpose": "I2C总线连接AT24C02"},
+    {"type": "UART", "instance": "USART1", "pins": ["PA9", "PA10"], "purpose": "串口通信"},
+    {"type": "GPIO", "pin": "PC15", "purpose": "蜂鸣器控制(低电平有效)"}
+  ],
+  "requirements": [
+    "LCD时钟界面显示: HH:MM:SS 和 YYYY-MM-DD",
+    "按键B2/B3进入设置模式逐位调节时/分/秒，B4确认",
+    "支持设置3组闹钟，到时蜂鸣器响5秒，任意按键关闭",
+    "闹钟设置和最近10条事件(闹钟触发/时间修改)存储到AT24C02",
+    "上电时从EEPROM读取闹钟配置，断电不丢失",
+    "串口每分钟上报当前时间，闹钟触发时立即上报",
+    "LD1以1Hz频率闪烁作为秒指示"
+  ],
+  "acceptance": {
+    "uart_contains": ["TIME:", "ALARM:"],
+    "notes": ["RTC需配置LSE晶振", "AT24C02页写入最大8字节需分段", "EEPROM写入后需5ms延时"]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "mcp23017_i2c",
+  "display_name": "MCP23017",
+  "summary": "MCP23017 16-bit I/O expander over I2C.",
+  "hal_components": ["GPIO", "I2C", "DMA"],
+  "template_files": ["modules/mcp23017.c", "modules/mcp23017.h"],
+  "resource_requests": ["i2c_device"],
+  "address_options": [32, 33, 34, 35, 36, 37, 38, 39],
+  "bus_kind": "i2c",
+  "notes": [
+    "The MCP23017 supports up to eight I2C addresses through A0-A2.",
+    "This template uses the default BANK=0 register map."
+  ],
+  "sources": [
+    "Microchip MCP23017 datasheet"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "ir_receiver",
+  "display_name": "IR Receiver (VS1838B / NEC Protocol)",
+  "summary": "Infrared receiver module (VS1838B) with NEC protocol decoder. Receives signals from standard IR remotes and decodes key codes.",
+  "template_files": [
+    "modules/ir_receiver.c",
+    "modules/ir_receiver.h"
+  ],
+  "hal_components": ["GPIO", "TIM"],
+  "resource_requests": [
+    "gpio_in:out"
+  ],
+  "notes": [
+    "VS1838B operates at 3.3V or 5V, output is active LOW.",
+    "NEC protocol: 9ms leader + 4.5ms space + 32-bit data (address + command).",
+    "Use timer input capture or external interrupt for decode timing.",
+    "Common IR remote key codes: power=0x45, menu=0x47, 0-9=0x16..0x0D."
+  ],
+  "sources": [
+    "VS1838B datasheet",
+    "NEC infrared protocol specification"
+  ],
+  "app_logic_snippets": {
+    "init": "IR_Init();  /* configure EXTI + timer */",
+    "loop": "if (IR_DataReady()) {\n    uint32_t code = IR_GetCode();\n    uint8_t cmd = (code >> 8) & 0xFF;\n    switch (cmd) {\n        case IR_KEY_1: /* handle key 1 */ break;\n        case IR_KEY_2: /* handle key 2 */ break;\n    }\n}",
+    "api_summary": "IR_Init() IR_DataReady() IR_GetCode() IR_GetAddress() IR_GetCommand() IR_ClearFlag()",
+    "notes": "IR_GetCode() returns 32-bit NEC frame: addr_inv[31:24] | addr[23:16] | cmd_inv[15:8] | cmd[7:0]. Use IR_GetCommand() for the 8-bit key code. Repeat codes (held button) set a separate flag."
+  }
+}

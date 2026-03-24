@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "aht20_i2c",
+  "display_name": "AHT20",
+  "summary": "AHT20 temperature and humidity sensor over I2C, fixed 7-bit address 0x38.",
+  "hal_components": ["GPIO", "I2C", "DMA"],
+  "template_files": ["modules/aht20.c", "modules/aht20.h"],
+  "resource_requests": ["i2c_device"],
+  "c_init_template": [
+    "    (void)AHT20_Init(&[[i2c_handle]], [[i2c_address_macro]], 100);"
+  ],
+  "address_options": [56],
+  "bus_kind": "i2c",
+  "notes": [
+    "AHT20 uses the fixed 7-bit I2C address 0x38.",
+    "Allow the device to power up before the first initialization command."
+  ],
+  "app_logic_snippets": {
+    "read_and_log": {
+      "description": "Periodically read temperature and humidity, log via UART",
+      "init": [
+        "(void)AHT20_Init(&[[i2c_handle]], [[i2c_address_macro]], 100);"
+      ],
+      "periodic_task": {
+        "every_ms": 2000,
+        "run": [
+          "float temp = 0.0f, humi = 0.0f;",
+          "if (AHT20_ReadFloat(&[[i2c_handle]], [[i2c_address_macro]], &temp, &humi, 200) == HAL_OK) {",
+          "    char buf[48];",
+          "    snprintf(buf, sizeof(buf), \"T:%.1fC H:%.1f%%\", temp, humi);",
+          "    DebugUart_WriteLine(&[[uart_handle]], buf, 100);",
+          "}"
+        ]
+      },
+      "key_apis": ["AHT20_Init", "AHT20_ReadFloat"]
+    }
+  },
+  "sources": [
+    "ASAIR AHT20 temperature and humidity sensor datasheet"
+  ]
+}

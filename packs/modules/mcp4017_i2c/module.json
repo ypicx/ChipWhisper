@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "mcp4017_i2c",
+  "display_name": "MCP4017 I2C Digital Potentiometer",
+  "summary": "MCP4017 7-bit volatile digital potentiometer on an I2C bus.",
+  "hal_components": ["GPIO", "I2C", "DMA"],
+  "template_files": ["modules/mcp4017.c", "modules/mcp4017.h"],
+  "resource_requests": ["i2c_device"],
+  "c_init_template": [
+    "    /* MCP4017 transport ready: MCP4017_SetWiper(&[[i2c_handle]], [[i2c_address_macro]], value, 100); */"
+  ],
+  "address_options": [47],
+  "bus_kind": "i2c",
+  "notes": [
+    "Microchip MCP4017 uses a 7-bit I2C address of 0x2F for the fixed-address variant.",
+    "The data byte carries the 7-bit volatile wiper value; the data MSb is don't care."
+  ],
+  "sources": [
+    "Microchip MCP4017/18/19 datasheet DS20002147"
+  ]
+}

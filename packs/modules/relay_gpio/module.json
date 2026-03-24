@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "relay_gpio",
+  "display_name": "Relay GPIO",
+  "summary": "Single-channel relay module driven by one GPIO output.",
+  "hal_components": [
+    "GPIO"
+  ],
+  "template_files": [
+    "modules/relay_gpio.c",
+    "modules/relay_gpio.h"
+  ],
+  "resource_requests": [
+    "gpio_out:control"
+  ],
+  "c_init_template": [
+    "    RelayGpio_InitPin([[control_port_macro]], [[control_pin_macro]]);"
+  ],
+  "notes": [
+    "This pack models the common transistor-driven relay boards that only need one digital control pin.",
+    "If the module is active-low in real hardware, invert the write logic in the template implementation."
+  ],
+  "sources": [
+    "Generic 1-channel relay module wiring pattern: VCC, GND, IN."
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "kind": "scenario",
+  "scenario_id": "motor_speed_control",
+  "display_name": "电机调速系统",
+  "tags": ["电机", "PWM", "编码器", "毕设", "控制"],
+  "description": "通过旋转编码器手动调节PWM占空比控制直流电机转速，OLED显示当前占空比和方向",
+  "recommended_boards": ["nucleo_f103rb", "bluepill"],
+  "modules": [
+    { "kind": "dc_motor_pwm", "name": "motor" },
+    { "kind": "ssd1306_i2c", "name": "oled_display" },
+    { "kind": "uart_debug", "name": "debug_port" },
+    { "kind": "button", "name": "dir_button" },
+    { "kind": "led", "name": "run_indicator" }
+  ],
+  "app_logic_goal": "PWM控制电机转速，按键切换正/反转方向，ADC或按键调节占空比（0-100%步进5%），OLED显示占空比和方向，LED指示电机运行状态，串口输出状态变化日志。",
+  "requirements": [
+    "PWM输出控制电机转速，频率1kHz",
+    "占空比可调0-100%，步进5%",
+    "按键切换正反转方向",
+    "OLED显示当前占空比百分比和转动方向",
+    "LED在电机运行时常亮",
+    "串口输出占空比和方向变化"
+  ],
+  "assumptions": [
+    "使用L298N或类似H桥驱动",
+    "方向控制通过一个GPIO输出实现",
+    "电机额定电压在驱动范围内"
+  ]
+}

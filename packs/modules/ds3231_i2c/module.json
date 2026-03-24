@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "ds3231_i2c",
+  "display_name": "DS3231",
+  "summary": "DS3231 real-time clock over I2C, fixed 7-bit address 0x68.",
+  "hal_components": ["GPIO", "I2C", "DMA"],
+  "template_files": ["modules/ds3231.c", "modules/ds3231.h"],
+  "resource_requests": ["i2c_device"],
+  "c_init_template": [
+    "    /* DS3231 transport ready: DS3231_ReadDateTime(&[[i2c_handle]], [[i2c_address_macro]], &date_time, 100); */"
+  ],
+  "address_options": [104],
+  "bus_kind": "i2c",
+  "notes": [
+    "DS3231 uses the fixed 7-bit I2C address 0x68.",
+    "Keep a backup battery connected if you need timekeeping during main-power loss."
+  ],
+  "sources": [
+    "Analog Devices DS3231 Extremely Accurate I2C-Integrated RTC/TCXO/Crystal datasheet"
+  ]
+}

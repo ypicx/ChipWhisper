@@ -1,0 +1,38 @@
+{
+  "default_profile_id": "openai",
+  "profiles": [
+    {
+      "profile_id": "openai",
+      "name": "OpenAI",
+      "provider_type": "openai",
+      "base_url": "https://api.openai.com/v1",
+      "api_key": "",
+      "model": "gpt-4.1-mini",
+      "system_prompt": "You are an STM32 development assistant. Stay grounded in the current project, the user request, and the available files.",
+      "temperature": 0.2,
+      "enabled": true
+    },
+    {
+      "profile_id": "openai-compatible",
+      "name": "OpenAI Compatible",
+      "provider_type": "openai_compatible",
+      "base_url": "https://api.example.com/v1",
+      "api_key": "",
+      "model": "",
+      "system_prompt": "You are an STM32 development assistant. Stay grounded in the current project, the user request, and the available files.",
+      "temperature": 0.2,
+      "enabled": false
+    },
+    {
+      "profile_id": "ollama-local",
+      "name": "Ollama Local",
+      "provider_type": "ollama",
+      "base_url": "http://127.0.0.1:11434",
+      "api_key": "",
+      "model": "qwen2.5-coder:7b",
+      "system_prompt": "You are an STM32 development assistant. Stay grounded in the current project, the user request, and the available files.",
+      "temperature": 0.2,
+      "enabled": false
+    }
+  ]
+}

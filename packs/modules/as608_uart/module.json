@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "as608_uart",
+  "display_name": "AS608 UART",
+  "summary": "AS608-style fingerprint module over TTL UART, intended to use imported vendor .h/.c driver files.",
+  "hal_components": [
+    "GPIO",
+    "USART",
+    "DMA"
+  ],
+  "template_files": [],
+  "resource_requests": [
+    "uart_port",
+    "gpio_out:bl:optional",
+    "gpio_out:rst:optional"
+  ],
+  "dma_requests": [
+    "uart_rx",
+    "uart_tx"
+  ],
+  "notes": [
+    "Import the verified vendor .h/.c implementation before scaffolding so the generated project uses the real driver source.",
+    "This pack models the common UART wiring: VCC, GND, TX, RX, with optional BL and RST control pins exposed on some boards.",
+    "Baud rate and command set vary across AS608-family breakout vendors, so use the official module manual and sample code from your exact supplier."
+  ],
+  "sources": [
+    "Waveshare UART Fingerprint Reader User Manual, section 2.2 and 3.2",
+    "Waveshare UART Fingerprint Reader wiki",
+    "Adafruit Optical Fingerprint Sensor Library examples"
+  ]
+}

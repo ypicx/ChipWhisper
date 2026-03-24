@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "soft_task_scheduler",
+  "display_name": "Soft Task Scheduler",
+  "summary": "Cooperative periodic task scheduler built on the shared SoftTimer millisecond time base.",
+  "hal_components": [],
+  "template_files": [
+    "modules/soft_task_scheduler.c",
+    "modules/soft_task_scheduler.h"
+  ],
+  "resource_requests": [],
+  "depends_on": [
+    "soft_timer"
+  ],
+  "init_priority": -40,
+  "loop_priority": -40,
+  "c_init_template": [
+    "    SoftTaskScheduler_Init();"
+  ],
+  "c_loop_template": [
+    "    SoftTaskScheduler_Tick(SoftTimer_GetMillis());"
+  ],
+  "notes": [
+    "Use this middleware when complex application logic should run as named periodic callbacks instead of handwritten loop state machines.",
+    "Register tasks in AppInit with SoftTaskScheduler_Add(...), then keep callback bodies in AppCallbacks."
+  ],
+  "sources": [
+    "Cooperative foreground scheduler pattern for bare-metal STM32 firmware."
+  ]
+}

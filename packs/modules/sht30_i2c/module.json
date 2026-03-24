@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "sht30_i2c",
+  "display_name": "SHT30",
+  "summary": "SHT30 temperature and humidity sensor over I2C.",
+  "hal_components": ["GPIO", "I2C", "DMA"],
+  "template_files": ["modules/sht30.c", "modules/sht30.h"],
+  "resource_requests": ["i2c_device"],
+  "address_options": [68, 69],
+  "bus_kind": "i2c",
+  "notes": [
+    "SHT30 commonly uses 0x44 or 0x45 depending on address pin wiring.",
+    "This template uses high-repeatability single-shot measurement without clock stretching."
+  ],
+  "sources": [
+    "Sensirion SHT3x humidity and temperature sensor datasheet"
+  ]
+}

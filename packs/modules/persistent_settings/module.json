@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "persistent_settings",
+  "display_name": "Persistent Settings",
+  "summary": "Buffered persistent-settings middleware with defaults, dirty tracking, and deferred save scheduling.",
+  "hal_components": [],
+  "template_files": [
+    "modules/persistent_settings.c",
+    "modules/persistent_settings.h"
+  ],
+  "resource_requests": [],
+  "depends_on": [
+    "soft_task_scheduler"
+  ],
+  "init_priority": 50,
+  "loop_priority": 50,
+  "c_top_template": [
+    "static PersistentSettings [[module_identifier]];",
+    "static uint8_t [[module_identifier]]_data[[[option_bytes|32]]];"
+  ],
+  "c_init_template": [
+    "    PersistentSettings_Init(&[[module_identifier]], \"[[module_name]]\", [[module_identifier]]_data, (uint16_t)sizeof([[module_identifier]]_data), (uint16_t)[[option_version|1]], [[option_commit_delay_ms|1500]]);",
+    "    PersistentSettings_Load(&[[module_identifier]]);",
+    "    (void)SoftTaskScheduler_Add(\"[[module_name]]:commit\", [[option_task_period_ms|100]], PersistentSettings_TaskCallback, &[[module_identifier]]);"
+  ],
+  "notes": [
+    "Override PersistentSettings_OnDefaults(...), PersistentSettings_OnLoad(...), and PersistentSettings_OnSave(...) in AppCallbacks to connect this middleware to EEPROM, Flash, FRAM, or any other storage backend.",
+    "After changing values in the settings buffer, call PersistentSettings_MarkDirty(...) so the scheduled task can commit them later without blocking the main loop."
+  ],
+  "sources": [
+    "Generic embedded settings-cache pattern with deferred commit."
+  ]
+}

@@ -1,0 +1,113 @@
+# {{ project_name }} Project Report
+
+## Overview
+
+- Project name: `{{ project_name }}`
+- Target chip: `{{ target_chip }}`
+- STM32 family: `{{ target_family }}`
+- Package: `{{ target_package }}`
+- Board profile: `{{ target_board }}`
+- Module count: `{{ module_count }}`
+- Pin assignments: `{{ assignment_count }}`
+
+## Quick Start
+
+1. Import the official `{{ support.cube_package_label }}` drivers into `Drivers/`.
+2. Open `MDK-ARM/{{ project_name }}.uvprojx` in Keil5.
+3. Wire the modules according to the assignments below and review power, pull-up, and level compatibility details.
+4. Build the project and flash the generated `axf` or `hex` file as needed.
+5. Keep application logic in the `USER CODE` regions of `App/Src/app_main.c`.
+
+## Key Files
+
+- Keil project: `MDK-ARM/{{ project_name }}.uvprojx`
+- Application entry: `App/Src/app_main.c`
+- Pin macros: `Core/Inc/app_config.h`
+- Peripheral initialization: `Core/Src/peripherals.c`
+- Planning result: `project_ir.json`
+
+{% if architecture_notes %}
+## Software Architecture
+
+{% for note in architecture_notes %}
+{{ note }}
+{% endfor %}
+{% endif %}
+{% if board_capabilities %}
+## Board Capabilities
+
+{% for capability in board_capabilities %}
+- `{{ capability.display_name }}`{% if capability.summary %}: {{ capability.summary }}{% endif %}
+
+{% endfor %}
+{% endif %}
+{% if board_notes %}
+## Board Notes
+
+{% for note in board_notes %}
+- {{ note }}
+{% endfor %}
+{% endif %}
+## Modules
+
+{% if modules %}
+{% for module in modules %}
+- {{ module.label }}
+{% endfor %}
+{% else %}
+- No modules were planned for this project.
+{% endif %}
+
+{% if module_details %}
+### Module Details
+
+| Module | Type | Bus | Address | Notes |
+| --- | --- | --- | --- | --- |
+{% for detail in module_details %}
+| `{{ detail.name }}` | `{{ detail.kind }}` | {{ detail.bus }} | {{ detail.address }} | {{ detail.notes }} |
+{% endfor %}
+{% endif %}
+
+## Pin Assignments
+
+| Module | Signal | Pin | Notes |
+| --- | --- | --- | --- |
+{% if assignments %}
+{% for assignment in assignments %}
+| `{{ assignment.module }}` | `{{ assignment.signal }}` | `{{ assignment.pin }}` | {{ assignment.reason }} |
+{% endfor %}
+{% else %}
+| - | - | - | No physical pins were allocated. |
+{% endif %}
+
+## Shared Buses And Peripheral Resources
+
+{% if buses %}
+| Resource | Pins | Attached modules | Notes |
+| --- | --- | --- | --- |
+{% for bus in buses %}
+| `{{ bus.bus }}` | `{{ bus.pin_text }}` | {{ bus.device_text }} | {{ bus.note_text }} |
+{% endfor %}
+{% else %}
+- No shared bus resources were allocated.
+{% endif %}
+
+## Usage Tips
+
+{% for tip in usage_tips %}
+- {{ tip }}
+{% endfor %}
+{% if warnings %}
+## Planning Warnings
+
+{% for warning in warnings %}
+- {{ warning }}
+{% endfor %}
+{% endif %}
+{% if errors %}
+## Planning Errors
+
+{% for error in errors %}
+- {{ error }}
+{% endfor %}
+{% endif %}

@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "sn74hc595_gpio",
+  "display_name": "SN74HC595",
+  "summary": "SN74HC595 serial-in, parallel-out shift register using three GPIO outputs.",
+  "hal_components": ["GPIO"],
+  "template_files": ["modules/sn74hc595.c", "modules/sn74hc595.h"],
+  "resource_requests": ["gpio_out:data", "gpio_out:clock", "gpio_out:latch"],
+  "c_init_template": [
+    "    ShiftRegister595_InitPins([[data_port_macro]], [[data_pin_macro]], [[clock_port_macro]], [[clock_pin_macro]], [[latch_port_macro]], [[latch_pin_macro]]);"
+  ],
+  "notes": [
+    "Use an external current-limiting resistor network when driving LEDs.",
+    "Keep OE and SRCLR in known states on the real board."
+  ],
+  "sources": [
+    "Texas Instruments SN74HC595 8-Bit Shift Registers With 3-State Output Registers datasheet"
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "schema_version": "1.0",
+  "kind": "board",
+  "key": "nucleo_f103rb",
+  "display_name": "NUCLEO-F103RB",
+  "summary": "ST NUCLEO-F103RB board with on-board LED on PA5 and user button on PC13.",
+  "chip": "STM32F103RBT6",
+  "reserved_pins": [],
+  "avoid_pins": [],
+  "preferred_signals": {
+    "led.control": [
+      "PA5"
+    ],
+    "button.input": [
+      "PC13"
+    ],
+    "uart_debug.tx": [
+      "PA2"
+    ],
+    "uart_debug.rx": [
+      "PA3"
+    ],
+    "spi_bus.nss": [
+      "PA4"
+    ],
+    "spi_bus.sck": [
+      "PA5"
+    ],
+    "spi_bus.miso": [
+      "PA6"
+    ],
+    "spi_bus.mosi": [
+      "PA7"
+    ],
+    "spi_device.nss": [
+      "PA4"
+    ],
+    "spi_device.sck": [
+      "PA5"
+    ],
+    "spi_device.miso": [
+      "PA6"
+    ],
+    "spi_device.mosi": [
+      "PA7"
+    ]
+  },
+  "capabilities": [
+    {
+      "key": "board_led",
+      "display_name": "On-board LED",
+      "summary": "LD2 is wired to PA5 on the NUCLEO-F103RB board and can be reused as a status indicator.",
+      "module_kind": "led",
+      "recommended_name": "status_led",
+      "category": "indicator"
+    },
+    {
+      "key": "board_button",
+      "display_name": "User button",
+      "summary": "B1 is wired to PC13 and works as the default on-board user button.",
+      "module_kind": "button",
+      "recommended_name": "user_button",
+      "category": "input"
+    },
+    {
+      "key": "board_uart_vcp",
+      "display_name": "ST-LINK Virtual COM Port",
+      "summary": "USART2 on PA2 and PA3 is bridged to the on-board ST-LINK virtual COM port for logging and command I/O.",
+      "module_kind": "uart_debug",
+      "recommended_name": "debug",
+      "category": "debug"
+    },
+    {
+      "key": "board_spi_header",
+      "display_name": "Arduino SPI header routing",
+      "summary": "SPI1 default pins PA4, PA5, PA6, and PA7 align with the Arduino-style SPI header on the NUCLEO-64 form factor.",
+      "module_kind": "",
+      "recommended_name": "",
+      "category": "bus"
+    }
+  ],
+  "clock_profile": {
+    "summary": "NUCLEO-F103RB clock tree using the standard 8 MHz HSE source and PLL x9 for a 72 MHz system clock.",
+    "cpu_clock_hz": 72000000,
+    "hse_value": 8000000,
+    "hsi_value": 8000000,
+    "lsi_value": 40000,
+    "lse_value": 32768,
+    "external_clock_value": 48000,
+    "system_clock_config": [
+      "    RCC_OscInitTypeDef RCC_OscInitStruct = {0};",
+      "    RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};",
+      "",
+      "    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;",
+      "    RCC_OscInitStruct.HSEState = RCC_HSE_ON;",
+      "    RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;",
+      "    RCC_OscInitStruct.HSIState = RCC_HSI_ON;",
+      "    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;",
+      "    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;",
+      "    RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;",
+      "    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {",
+      "        Error_Handler();",
+      "    }",
+      "",
+      "    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK",
+      "                                 | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;",
+      "    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;",
+      "    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;",
+      "    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;",
+      "    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;",
+      "    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK) {",
+      "        Error_Handler();",
+      "    }"
+    ],
+    "notes": [
+      "The NUCLEO-F103RB reference configuration commonly runs the MCU at 72 MHz from an 8 MHz HSE source."
+    ]
+  },
+  "notes": [
+    "LD2 is connected to PA5 on the NUCLEO-F103RB board.",
+    "B1 user button is connected to PC13 on the NUCLEO-F103RB board.",
+    "USART2 on PA2 and PA3 is commonly bridged to the on-board ST-LINK virtual COM port."
+  ],
+  "sources": [
+    "ST NUCLEO-F103RB board documentation",
+    "ST UM1724 STM32 Nucleo-64 boards user manual"
+  ]
+}

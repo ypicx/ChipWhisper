@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "hc05_uart",
+  "display_name": "HC-05 Bluetooth Module",
+  "summary": "HC-05 Bluetooth SPP module via UART. Supports master/slave mode, transparent serial data transmission to phone or PC.",
+  "template_files": [
+    "modules/hc05.c",
+    "modules/hc05.h"
+  ],
+  "hal_components": ["UART"],
+  "resource_requests": [
+    "uart:tx",
+    "uart:rx"
+  ],
+  "notes": [
+    "HC-05 operates at 3.3V logic level, compatible with STM32 directly.",
+    "Default baud rate 9600 (data mode), 38400 (AT mode).",
+    "Enter AT mode: hold KEY button while powering on, LED blinks slowly.",
+    "Pair with phone via Bluetooth SPP app, default PIN 1234."
+  ],
+  "sources": [
+    "HC-05 Bluetooth module datasheet",
+    "HC-05 AT command reference"
+  ],
+  "app_logic_snippets": {
+    "init": "HC05_Init(9600);  /* baud rate */",
+    "loop": "if (HC05_DataAvailable()) {\n    uint16_t len = HC05_Read(rx_buf, sizeof(rx_buf));\n    /* parse phone command */\n}\n/* send sensor data to phone */\nHC05_Printf(\"T:%.1f H:%.1f\\r\\n\", temperature, humidity);",
+    "api_summary": "HC05_Init(baud) HC05_Send(data,len) HC05_Printf(fmt,...) HC05_Read(buf,max) HC05_DataAvailable() HC05_SendAT(cmd,resp,timeout)",
+    "notes": "HC-05 is transparent UART bridge. Data sent to UART appears on Bluetooth SPP. Use HC05_SendAT() only in AT mode (KEY pin HIGH)."
+  }
+}

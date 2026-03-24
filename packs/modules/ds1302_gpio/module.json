@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "ds1302_gpio",
+  "display_name": "DS1302",
+  "summary": "DS1302 three-wire RTC driven by CE, CLK and a bidirectional IO signal.",
+  "hal_components": [
+    "GPIO"
+  ],
+  "template_files": [
+    "modules/ds1302_gpio.c",
+    "modules/ds1302_gpio.h"
+  ],
+  "resource_requests": [
+    "gpio_out:ce",
+    "gpio_out:clk",
+    "onewire_gpio:io"
+  ],
+  "notes": [
+    "The IO line is bidirectional; the template switches the pin between input and open-drain output modes.",
+    "Real hardware normally needs the DS1302 backup supply and 32.768 kHz crystal to be populated."
+  ],
+  "sources": [
+    "Maxim DS1302 trickle-charge timekeeping chip documentation."
+  ]
+}

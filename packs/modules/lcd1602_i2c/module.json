@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "kind": "module",
+  "key": "lcd1602_i2c",
+  "display_name": "LCD1602 I2C",
+  "summary": "LCD1602 character display with a common PCF8574-style I2C backpack.",
+  "hal_components": ["GPIO", "I2C", "DMA"],
+  "template_files": ["modules/lcd1602.c", "modules/lcd1602.h"],
+  "resource_requests": ["i2c_device"],
+  "address_options": [39, 63],
+  "bus_kind": "i2c",
+  "app_logic_snippets": {
+    "display_text": {
+      "description": "Initialize LCD and display formatted text on two lines",
+      "init": [
+        "LCD1602_Init(&[[i2c_handle]], [[i2c_address_macro]], 100);",
+        "LCD1602_Clear(&[[i2c_handle]], [[i2c_address_macro]], 100);"
+      ],
+      "periodic_task": {
+        "every_ms": 1000,
+        "run": [
+          "char line1[17], line2[17];",
+          "snprintf(line1, sizeof(line1), \"Line1: %s\", status_text);",
+          "snprintf(line2, sizeof(line2), \"Val: %d\", (int)value);",
+          "LCD1602_SetCursor(&[[i2c_handle]], [[i2c_address_macro]], 0, 0, 100);",
+          "LCD1602_WriteString(&[[i2c_handle]], [[i2c_address_macro]], line1, 100);",
+          "LCD1602_SetCursor(&[[i2c_handle]], [[i2c_address_macro]], 1, 0, 100);",
+          "LCD1602_WriteString(&[[i2c_handle]], [[i2c_address_macro]], line2, 100);"
+        ]
+      },
+      "key_apis": ["LCD1602_Init", "LCD1602_Clear", "LCD1602_SetCursor", "LCD1602_WriteString"]
+    }
+  },
+  "notes": [
+    "Common LCD1602 I2C backpacks use 0x27 or 0x3F.",
+    "This template assumes the usual PCF8574 backpack bit mapping for RS/RW/EN/BL and D4-D7."
+  ],
+  "sources": [
+    "HD44780-compatible LCD1602 with PCF8574 I2C backpack wiring conventions"
+  ]
+}

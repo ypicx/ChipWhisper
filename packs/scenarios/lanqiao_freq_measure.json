@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "kind": "scenario",
+  "scenario_id": "lanqiao_freq_measure",
+  "display_name": "蓝桥杯：频率测量与信号发生器",
+  "tags": ["蓝桥杯", "竞赛", "CT117E", "定时器", "输入捕获", "PWM", "频率测量", "STM32G431"],
+  "description": "基于CT117E开发板的频率测量+信号发生器综合项目。PA7输入捕获测量外部信号频率(100Hz~100kHz)，PA1输出可调频率PWM信号，LCD显示测量频率/输出频率/占空比，按键调节输出参数。此题型为蓝桥杯第十四届省赛频率测量考点还原。",
+  "chip": "STM32G431RBT6",
+  "board": "CT117E",
+  "required_modules": [
+    {"kind": "ct117e_lcd_parallel", "name": "lcd", "summary": "LCD显示：测量频率/输出频率/占空比/模式"},
+    {"kind": "ct117e_led_latch", "name": "led", "summary": "LED：LD1输出使能指示，LD2测量有效指示"},
+    {"kind": "ct117e_key_scan", "name": "key", "summary": "按键：B1界面切换，B2频率+，B3频率-，B4占空比调节"},
+    {"kind": "uart_debug", "name": "uart1", "summary": "串口上报测量数据"}
+  ],
+  "peripherals": [
+    {"type": "INPUT_CAPTURE", "timer": "TIM3_CH2", "pin": "PA7", "purpose": "输入捕获测量外部信号频率，上升沿触发"},
+    {"type": "PWM", "timer": "TIM2_CH2", "pin": "PA1", "purpose": "PWM输出，频率100Hz~100kHz可调，占空比10%~90%可调"},
+    {"type": "UART", "instance": "USART1", "pins": ["PA9", "PA10"], "purpose": "串口通信，波特率9600"}
+  ],
+  "requirements": [
+    "PA7输入捕获测量频率，支持100Hz~100kHz范围",
+    "PA1输出PWM，频率按1kHz步进调节(B2加/B3减)，范围1kHz~20kHz",
+    "B4按键调节占空比，步进10%，范围10%~90%循环",
+    "LCD主界面显示: 测量频率(Hz)、输出频率(Hz)、输出占空比(%)",
+    "可将PA1输出环回接到PA7进行自测验证",
+    "测量频率精度要求±1%",
+    "串口每秒上报测量频率和输出参数"
+  ],
+  "acceptance": {
+    "uart_contains": ["Freq:", "Out:", "Duty:"],
+    "notes": ["输入捕获需注意定时器溢出处理", "高频测量建议使用DMA或周期计数法", "低频测量使用脉宽测量法"]
+  }
+}

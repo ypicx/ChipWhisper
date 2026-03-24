@@ -1,0 +1,529 @@
+{
+  "schema_version": "1.0",
+  "kind": "chip",
+  "name": "STM32G431RBT6",
+  "device_name": "STM32G431RBTx",
+  "vendor": "STMicroelectronics",
+  "family": "STM32G4",
+  "cpu_type": "Cortex-M4",
+  "package": "LQFP64",
+  "flash_kb": 128,
+  "ram_kb": 32,
+  "irom_start": "0x08000000",
+  "iram_start": "0x20000000",
+  "c_define": "STM32G431xx",
+  "reserved_pins": [
+    "PA13",
+    "PA14"
+  ],
+  "gpio_preference": [
+    "PB12",
+    "PB13",
+    "PB14",
+    "PB15",
+    "PA0",
+    "PA1",
+    "PA4",
+    "PA6",
+    "PA7",
+    "PB0",
+    "PB1",
+    "PB5",
+    "PB10",
+    "PB11",
+    "PA2",
+    "PA3",
+    "PA5",
+    "PA8",
+    "PA11",
+    "PA12",
+    "PA9",
+    "PA10",
+    "PB8",
+    "PB9",
+    "PC13",
+    "PC14",
+    "PC15",
+    "PC0",
+    "PC1",
+    "PC2",
+    "PC3",
+    "PC4",
+    "PC5",
+    "PC6",
+    "PC7",
+    "PC8",
+    "PC9",
+    "PC10",
+    "PC11",
+    "PC12"
+  ],
+  "adc_pins": [
+    "PA0",
+    "PA1",
+    "PA2",
+    "PA3",
+    "PA4",
+    "PA5",
+    "PA6",
+    "PA7",
+    "PB0",
+    "PB1",
+    "PB11",
+    "PB12",
+    "PB14",
+    "PB15",
+    "PC0",
+    "PC1",
+    "PC2",
+    "PC3",
+    "PC4",
+    "PC5"
+  ],
+  "adc_channels": {
+    "PA0": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_1"
+      },
+      {
+        "instance": "ADC2",
+        "channel": "ADC_CHANNEL_1"
+      }
+    ],
+    "PA1": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_2"
+      },
+      {
+        "instance": "ADC2",
+        "channel": "ADC_CHANNEL_2"
+      }
+    ],
+    "PA2": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_3"
+      }
+    ],
+    "PA3": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_4"
+      }
+    ],
+    "PA4": [
+      {
+        "instance": "ADC2",
+        "channel": "ADC_CHANNEL_17"
+      }
+    ],
+    "PA5": [
+      {
+        "instance": "ADC2",
+        "channel": "ADC_CHANNEL_13"
+      }
+    ],
+    "PA6": [
+      {
+        "instance": "ADC2",
+        "channel": "ADC_CHANNEL_3"
+      }
+    ],
+    "PA7": [
+      {
+        "instance": "ADC2",
+        "channel": "ADC_CHANNEL_4"
+      }
+    ],
+    "PB0": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_15"
+      }
+    ],
+    "PB1": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_12"
+      }
+    ],
+    "PB11": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_14"
+      },
+      {
+        "instance": "ADC2",
+        "channel": "ADC_CHANNEL_14"
+      }
+    ],
+    "PB12": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_11"
+      }
+    ],
+    "PB14": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_5"
+      }
+    ],
+    "PB15": [
+      {
+        "instance": "ADC2",
+        "channel": "ADC_CHANNEL_15"
+      }
+    ],
+    "PC0": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_6"
+      },
+      {
+        "instance": "ADC2",
+        "channel": "ADC_CHANNEL_6"
+      }
+    ],
+    "PC1": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_7"
+      },
+      {
+        "instance": "ADC2",
+        "channel": "ADC_CHANNEL_7"
+      }
+    ],
+    "PC2": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_8"
+      },
+      {
+        "instance": "ADC2",
+        "channel": "ADC_CHANNEL_8"
+      }
+    ],
+    "PC3": [
+      {
+        "instance": "ADC1",
+        "channel": "ADC_CHANNEL_9"
+      },
+      {
+        "instance": "ADC2",
+        "channel": "ADC_CHANNEL_9"
+      }
+    ],
+    "PC4": [
+      {
+        "instance": "ADC2",
+        "channel": "ADC_CHANNEL_5"
+      }
+    ],
+    "PC5": [
+      {
+        "instance": "ADC2",
+        "channel": "ADC_CHANNEL_11"
+      }
+    ]
+  },
+  "interfaces": {
+    "i2c": [
+      {
+        "option_id": "I2C1_PB8_PB9",
+        "kind": "i2c",
+        "instance": "I2C1",
+        "signals": {
+          "scl": "PB8",
+          "sda": "PB9"
+        },
+        "shareable": true,
+        "notes": [
+          "ST STM32G431 datasheet alternate-function mapping: I2C1 on PB8/PB9."
+        ]
+      },
+      {
+        "option_id": "I2C1_PB6_PB7",
+        "kind": "i2c",
+        "instance": "I2C1",
+        "signals": {
+          "scl": "PB6",
+          "sda": "PB7"
+        },
+        "shareable": true,
+        "notes": [
+          "ST STM32G431 alternate-function templates in STM32CubeMX list I2C1 on PB6/PB7.",
+          "Official CT117E-M4 bit-banged I2C reference also uses PB6/PB7 for board I2C resources."
+        ]
+      }
+    ],
+    "uart": [
+      {
+        "option_id": "USART2_PA2_PA3",
+        "kind": "uart",
+        "instance": "USART2",
+        "signals": {
+          "tx": "PA2",
+          "rx": "PA3"
+        },
+        "shareable": false,
+        "notes": [
+          "ST STM32G431 datasheet alternate-function mapping: USART2 on PA2/PA3."
+        ]
+      },
+      {
+        "option_id": "USART1_PA9_PA10",
+        "kind": "uart",
+        "instance": "USART1",
+        "signals": {
+          "tx": "PA9",
+          "rx": "PA10"
+        },
+        "shareable": false,
+        "notes": [
+          "ST STM32G431 datasheet alternate-function mapping: USART1 on PA9/PA10."
+        ]
+      },
+      {
+        "option_id": "USART1_PB6_PB7",
+        "kind": "uart",
+        "instance": "USART1",
+        "signals": {
+          "tx": "PB6",
+          "rx": "PB7"
+        },
+        "shareable": false,
+        "notes": [
+          "ST STM32G431 datasheet alternate-function mapping: USART1 on PB6/PB7."
+        ]
+      },
+      {
+        "option_id": "USART3_PB10_PB11",
+        "kind": "uart",
+        "instance": "USART3",
+        "signals": {
+          "tx": "PB10",
+          "rx": "PB11"
+        },
+        "shareable": false,
+        "notes": [
+          "ST STM32G431 datasheet alternate-function mapping: USART3 on PB10/PB11."
+        ]
+      }
+    ],
+    "spi": [
+      {
+        "option_id": "SPI1_PA4_PA5_PA6_PA7",
+        "kind": "spi",
+        "instance": "SPI1",
+        "signals": {
+          "nss": "PA4",
+          "sck": "PA5",
+          "miso": "PA6",
+          "mosi": "PA7"
+        },
+        "shareable": true,
+        "notes": [
+          "ST STM32G431 datasheet alternate-function mapping: SPI1 on PA4/PA5/PA6/PA7."
+        ]
+      }
+    ],
+    "dac": [
+      {
+        "option_id": "DAC1_CH1_PA4",
+        "kind": "dac",
+        "instance": "DAC1_CH1",
+        "signals": {
+          "out": "PA4"
+        },
+        "shareable": false,
+        "notes": [
+          "STM32CubeMX MCU XML STM32G431R(6-8-B)Tx.xml: DAC1_OUT1 on PA4."
+        ]
+      },
+      {
+        "option_id": "DAC1_CH2_PA5",
+        "kind": "dac",
+        "instance": "DAC1_CH2",
+        "signals": {
+          "out": "PA5"
+        },
+        "shareable": false,
+        "notes": [
+          "STM32CubeMX MCU XML STM32G431R(6-8-B)Tx.xml: DAC1_OUT2 on PA5."
+        ]
+      }
+    ],
+    "can": [
+      {
+        "option_id": "FDCAN1_DEFAULT",
+        "kind": "can",
+        "instance": "FDCAN1",
+        "signals": {
+          "rx": "PA11",
+          "tx": "PA12"
+        },
+        "shareable": false,
+        "notes": [
+          "STM32CubeMX MCU XML STM32G431R(6-8-B)Tx.xml: FDCAN1_RX/FDCAN1_TX on PA11/PA12."
+        ]
+      },
+      {
+        "option_id": "FDCAN1_PB8_PB9",
+        "kind": "can",
+        "instance": "FDCAN1",
+        "signals": {
+          "rx": "PB8",
+          "tx": "PB9"
+        },
+        "shareable": false,
+        "notes": [
+          "STM32CubeMX MCU XML STM32G431R(6-8-B)Tx.xml: FDCAN1_RX/FDCAN1_TX on PB8/PB9."
+        ]
+      }
+    ],
+    "usb": [
+      {
+        "option_id": "USB_FS_DEFAULT",
+        "kind": "usb",
+        "instance": "USB_FS",
+        "signals": {
+          "dm": "PA11",
+          "dp": "PA12"
+        },
+        "shareable": false,
+        "notes": [
+          "STM32CubeMX MCU XML STM32G431R(6-8-B)Tx.xml: USB_DM/USB_DP on PA11/PA12."
+        ]
+      }
+    ],
+    "pwm": [
+      {
+        "option_id": "TIM2_CH1_PA0",
+        "kind": "pwm",
+        "instance": "TIM2_CH1",
+        "signals": {
+          "out": "PA0"
+        },
+        "shareable": false,
+        "notes": []
+      },
+      {
+        "option_id": "TIM2_CH2_PA1",
+        "kind": "pwm",
+        "instance": "TIM2_CH2",
+        "signals": {
+          "out": "PA1"
+        },
+        "shareable": false,
+        "notes": []
+      },
+      {
+        "option_id": "TIM2_CH3_PA2",
+        "kind": "pwm",
+        "instance": "TIM2_CH3",
+        "signals": {
+          "out": "PA2"
+        },
+        "shareable": false,
+        "notes": []
+      },
+      {
+        "option_id": "TIM2_CH4_PA3",
+        "kind": "pwm",
+        "instance": "TIM2_CH4",
+        "signals": {
+          "out": "PA3"
+        },
+        "shareable": false,
+        "notes": []
+      },
+      {
+        "option_id": "TIM3_CH1_PA6",
+        "kind": "pwm",
+        "instance": "TIM3_CH1",
+        "signals": {
+          "out": "PA6"
+        },
+        "shareable": false,
+        "notes": []
+      },
+      {
+        "option_id": "TIM3_CH2_PA7",
+        "kind": "pwm",
+        "instance": "TIM3_CH2",
+        "signals": {
+          "out": "PA7"
+        },
+        "shareable": false,
+        "notes": []
+      }
+    ]
+  },
+  "dma_channels": [
+    "DMA1_Channel1",
+    "DMA1_Channel2",
+    "DMA1_Channel3",
+    "DMA1_Channel4",
+    "DMA1_Channel5",
+    "DMA1_Channel6",
+    "DMA1_Channel7",
+    "DMA1_Channel8",
+    "DMA2_Channel1",
+    "DMA2_Channel2",
+    "DMA2_Channel3",
+    "DMA2_Channel4",
+    "DMA2_Channel5",
+    "DMA2_Channel6"
+  ],
+  "dma_request_map": {},
+  "clock_profile": {
+    "summary": "Fallback chip-level clock profile using the internal HSI and PLL for an 80 MHz system clock.",
+    "cpu_clock_hz": 80000000,
+    "hse_value": 24000000,
+    "hsi_value": 16000000,
+    "lsi_value": 32000,
+    "lse_value": 32768,
+    "external_clock_value": 48000,
+    "system_clock_config": [
+      "    RCC_OscInitTypeDef RCC_OscInitStruct = {0};",
+      "    RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};",
+      "",
+      "    if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK) {",
+      "        Error_Handler();",
+      "    }",
+      "",
+      "    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;",
+      "    RCC_OscInitStruct.HSIState = RCC_HSI_ON;",
+      "    RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;",
+      "    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;",
+      "    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;",
+      "    RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV2;",
+      "    RCC_OscInitStruct.PLL.PLLN = 20;",
+      "    RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;",
+      "    RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;",
+      "    RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;",
+      "    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {",
+      "        Error_Handler();",
+      "    }",
+      "",
+      "    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1;",
+      "    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;",
+      "    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;",
+      "    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;",
+      "    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) != HAL_OK) {",
+      "        Error_Handler();",
+      "    }"
+    ],
+    "notes": [
+      "Use a board clock_profile to switch from this fallback to a real board crystal or peripheral-specific clock tree."
+    ]
+  },
+  "sources": [
+    "ST STM32G431RB datasheet",
+    "Local CT117E-M4 HAL sample project (HAL_06_LCD.ioc / MDK5_LCD_HAL)"
+  ]
+}

@@ -1,0 +1,27 @@
+/*
+ * 中断服务文件：
+ * 1. 保存系统节拍中断以及工程启用的外设中断处理函数。
+ * 2. 具体外设中断入口由生成器按照规划结果写入。
+ */
+
+{% for line in include_lines %}
+{{ line }}
+{% endfor %}
+
+/* 仅在中断文件中需要的附加头文件，请放在下面的用户代码区。 */
+/* USER CODE BEGIN InterruptIncludes */
+/* USER CODE END InterruptIncludes */
+
+void SysTick_Handler(void)
+{
+    /* SysTick 中断：用于驱动 HAL 的毫秒节拍计数。 */
+    /* USER CODE BEGIN SysTick_Pre */
+    /* USER CODE END SysTick_Pre */
+    HAL_IncTick();
+    /* USER CODE BEGIN SysTick_Post */
+    /* USER CODE END SysTick_Post */
+}
+
+{% for block in interrupt_blocks %}
+{{ block }}
+{% endfor %}
