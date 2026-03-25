@@ -42,6 +42,7 @@ class GraphRuntime:
     import_drivers_fn: Callable[..., Any] = import_cube_drivers
     repair_fn: Callable[[STM32ProjectState], Dict[str, object]] | None = None
     max_repairs: int = 2
+    generate_makefile: bool = False
     enable_runtime_validation: bool = False
     runtime_validation_seconds: float = 5.0
 
@@ -292,6 +293,7 @@ def make_scaffold_node(runtime: GraphRuntime):
             payload,
             output_dir,
             packs_dir=runtime.packs_dir,
+            generate_makefile=runtime.generate_makefile,
         )
         update: Dict[str, object] = {
             "scaffold_result": scaffold.to_dict(),

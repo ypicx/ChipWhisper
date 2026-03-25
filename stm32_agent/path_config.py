@@ -17,6 +17,7 @@ CONFIG_KEYS = {
     "stm32cube_repository_path": ["STM32CUBE_REPOSITORY", "STM32CUBE_REPO_PATH", "STM32CUBEMX_REPOSITORY"],
     "stm32cube_f1_package_path": ["STM32CUBE_F1_PACKAGE_PATH"],
     "stm32cube_g4_package_path": ["STM32CUBE_G4_PACKAGE_PATH"],
+    "arm_gcc_path": ["ARM_GCC_PATH", "ARM_NONE_EABI_GCC_PATH"],
 }
 
 
@@ -194,6 +195,10 @@ def write_path_config_template(config_path: str | Path | None = None, overwrite:
         "stm32cube_g4_package_path": _best_guess(
             resolve_configured_path("stm32cube_g4_package_path", resolved_path)[0],
             str((Path.home() / "STM32Cube" / "Repository" / "STM32Cube_FW_G4_V1.6.2")),
+        ),
+        "arm_gcc_path": _best_guess(
+            resolve_configured_path("arm_gcc_path", resolved_path)[0],
+            r"D:\Arm GNU Toolchain arm-none-eabi\14.3 rel1\bin\arm-none-eabi-gcc.exe",
         ),
     }
     resolved_path.write_text(json.dumps(template, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

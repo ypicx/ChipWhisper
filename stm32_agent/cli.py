@@ -11,6 +11,7 @@ from .app_logic_drafter import (
     merge_generated_app_logic,
 )
 from .builder import build_project, doctor_project, list_project_builders
+from .gcc_builder import build_gcc_project, doctor_gcc_project
 from .cube_repository import (
     doctor_cube_f1_package,
     doctor_cube_g4_package,
@@ -46,10 +47,13 @@ def main(argv: list[str] | None = None) -> int:
         _print_usage()
         return 2
 
+    generate_makefile = "--makefile" in argv
+    argv = [arg for arg in argv if arg != "--makefile"]
+
     command = argv[0]
 
     if command == "generate" and len(argv) in {3, 4}:
-        return _run_generate_pipeline(argv)
+        return _run_generate_pipeline(argv, generate_makefile=generate_makefile)
 
     if command == "plan" and len(argv) in {2, 3}:
         request_path = Path(argv[1])
@@ -73,7 +77,7 @@ def main(argv: list[str] | None = None) -> int:
             request_path=request_path,
             packs_dir=packs_dir,
         )
-        result = scaffold_from_request(payload, argv[2], packs_dir=packs_dir)
+        result = scaffold_from_request(payload, argv[2], packs_dir=packs_dir, generate_makefile=generate_makefile)
         result.warnings = [*result.warnings, *prep_warnings]
         print(json.dumps(result.to_dict(), ensure_ascii=False, indent=2))
         return 0 if result.feasible else 1
@@ -138,8 +142,18 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(result.to_dict(), ensure_ascii=False, indent=2))
         return 0 if result.ready else 1
 
-    if command == "build-project" and len(argv) in {2, 3}:
-        result = build_project(argv[1], builder_kind=argv[2] if len(argv) == 3 else "auto")
+    if command == "build-project" and len(argv) >= 2:
+        remaining = argv[1:]
+        builder_kind = "auto"
+        if "--gcc" in remaining:
+            builder_kind = "gcc"
+            remaining = [a for a in remaining if a != "--gcc"]
+        elif "--keil" in remaining:
+            builder_kind = "keil"
+            remaining = [a for a in remaining if a != "--keil"]
+        elif len(remaining) >= 2:
+            builder_kind = remaining[1]
+        result = build_project(remaining[0], builder_kind=builder_kind)
         print(json.dumps(result.to_dict(), ensure_ascii=False, indent=2))
         return 0 if result.built else 1
 
@@ -150,6 +164,16 @@ def main(argv: list[str] | None = None) -> int:
 
     if command == "build-keil" and len(argv) in {2, 3}:
         result = build_keil_project(argv[1], argv[2] if len(argv) == 3 else None)
+        print(json.dumps(result.to_dict(), ensure_ascii=False, indent=2))
+        return 0 if result.built else 1
+
+    if command == "doctor-gcc" and len(argv) in {2, 3}:
+        result = doctor_gcc_project(argv[1], argv[2] if len(argv) == 3 else None)
+        print(json.dumps(result.to_dict(), ensure_ascii=False, indent=2))
+        return 0 if result.ready else 1
+
+    if command == "build-gcc" and len(argv) in {2, 3}:
+        result = build_gcc_project(argv[1], argv[2] if len(argv) == 3 else None)
         print(json.dumps(result.to_dict(), ensure_ascii=False, indent=2))
         return 0 if result.built else 1
 
@@ -222,7 +246,9 @@ def _print_usage() -> None:
     print("   or: python -m stm32_agent import-cubemx-chip <refname|xml_path> [chip_name] [packs_dir]")
     print("   or: python -m stm32_agent list-builders")
     print("   or: python -m stm32_agent doctor-project <project_dir|project_file> [builder_kind]")
-    print("   or: python -m stm32_agent build-project <project_dir|project_file> [builder_kind]")
+    print("   or: python -m stm32_agent build-project <project_dir|project_file> [--gcc|--keil|builder_kind]")
+    print("   or: python -m stm32_agent doctor-gcc <project_dir> [arm-none-eabi-gcc]")
+    print("   or: python -m stm32_agent build-gcc <project_dir> [arm-none-eabi-gcc]")
     print("   or: python -m stm32_agent doctor-keil <project_dir|project.uvprojx> [uv4.exe]")
     print("   or: python -m stm32_agent build-keil <project_dir|project.uvprojx> [uv4.exe]")
     print("   or: python -m stm32_agent doctor-renode <project_dir|project.uvprojx> [renode.exe]")
@@ -339,7 +365,7 @@ def _looks_like_float(text: str) -> bool:
     return True
 
 
-def _run_generate_pipeline(argv: list[str]) -> int:
+def _run_generate_pipeline(argv: list[str], *, generate_makefile: bool = False) -> int:
     """One-click pipeline: plan → scaffold → import-drivers → build.
 
     Usage: generate <request.json> <output_dir> [packs_dir]
@@ -376,7 +402,7 @@ def _run_generate_pipeline(argv: list[str]) -> int:
     payload, prep_warnings = _prepare_payload_for_cli_scaffold(
         payload, request_path=request_path, packs_dir=packs_dir,
     )
-    scaffold_result = scaffold_from_request(payload, output_dir, packs_dir=packs_dir)
+    scaffold_result = scaffold_from_request(payload, output_dir, packs_dir=packs_dir, generate_makefile=generate_makefile)
     scaffold_result.warnings = [*scaffold_result.warnings, *prep_warnings]
     if not scaffold_result.feasible:
         pipeline_result["errors"] = ["Scaffolding failed."]

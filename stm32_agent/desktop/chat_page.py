@@ -194,6 +194,58 @@ class MessageBubble(QFrame):
         self._set_html(text)
 
 
+class NegotiationInlineCard(QFrame):
+    """协商交互卡片，嵌入到聊天消息流中，替代侧边栏的协商 UI。"""
+
+    def __init__(
+        self,
+        options: list,
+        on_submit: Callable[[str], None],
+        parent: QWidget | None = None,
+    ) -> None:
+        super().__init__(parent)
+        self.setObjectName("NegotiationInlineCard")
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(16, 14, 16, 14)
+        layout.setSpacing(10)
+
+        title_label = QLabel("方案协商")
+        title_label.setObjectName("SidebarSectionTitle")
+        hint_label = QLabel("规划遇到阻塞，请点击下方方案选项，或直接填写修改意见后提交：")
+        hint_label.setObjectName("SectionHint")
+        hint_label.setWordWrap(True)
+        layout.addWidget(title_label)
+        layout.addWidget(hint_label)
+
+        self._feedback_input = QPlainTextEdit()
+        self._feedback_input.setObjectName("CodeEditor")
+        self._feedback_input.setPlaceholderText("选择上方方案后自动填入，或直接在此写修改意见…")
+        self._feedback_input.setFixedHeight(72)
+
+        for option in options[:3]:
+            btn_title = str(option.get("title", "")).strip() or "建议方案"
+            btn_summary = str(option.get("summary", "")).strip()
+            btn_feedback = str(option.get("feedback", "")).strip()
+            btn = QPushButton(btn_title)
+            btn.setObjectName("NegotiationOptionButton")
+            if btn_summary:
+                btn.setToolTip(btn_summary)
+            btn.clicked.connect(
+                lambda _checked=False, fb=btn_feedback: self._feedback_input.setPlainText(fb)
+            )
+            layout.addWidget(btn)
+
+        layout.addWidget(self._feedback_input)
+
+        submit_btn = QPushButton("采纳并重算")
+        submit_btn.setObjectName("PrimaryButton")
+        submit_btn.clicked.connect(lambda: on_submit(self._feedback_input.toPlainText().strip()))
+        layout.addWidget(submit_btn)
+
+    def get_feedback(self) -> str:
+        return self._feedback_input.toPlainText().strip()
+
+
 class ChatPage(QWidget):
     project_activated = Signal(str)
 
@@ -214,6 +266,7 @@ class ChatPage(QWidget):
         self.thread_graph_thread_ids: dict[str, str] = {}
         self.max_context_messages = 12
         self._pending_proposal_state = PendingProposalState()
+        self._active_negotiation_card: NegotiationInlineCard | None = None
         self.pending_graph_session: STM32ProjectGraphSession | None = None
         self.profiles: List[LlmProfile] = []
         self.default_profile_id = ""
@@ -471,8 +524,8 @@ class ChatPage(QWidget):
         self.proposal_feedback_input = QPlainTextEdit()
         self.proposal_feedback_input.setObjectName("CodeEditor")
         self.proposal_feedback_input.setPlaceholderText("如果方案不合适，在这里写修改意见，例如：I2C 固定到 PB6/PB7，或者不要用 PC13。")
-        self.proposal_view.setMinimumHeight(136)
-        self.proposal_feedback_input.setMinimumHeight(86)
+        self.proposal_view.setMinimumHeight(60)
+        self.proposal_feedback_input.setMinimumHeight(60)
         self.proposal_actions_widget = QWidget()
         proposal_actions = QHBoxLayout(self.proposal_actions_widget)
         proposal_actions.setContentsMargins(0, 0, 0, 0)
@@ -491,6 +544,7 @@ class ChatPage(QWidget):
         proposal_actions.addWidget(self.revise_proposal_button)
         proposal_actions.addWidget(self.clear_proposal_button)
         proposal_summary_card = Card()
+        self.proposal_summary_card = proposal_summary_card
         proposal_summary_layout = QVBoxLayout(proposal_summary_card)
         proposal_summary_layout.setContentsMargins(8, 7, 8, 7)
         proposal_summary_layout.setSpacing(6)
@@ -528,7 +582,7 @@ class ChatPage(QWidget):
         self.proposal_splitter.addWidget(proposal_feedback_card)
         self.proposal_splitter.setStretchFactor(0, 4)
         self.proposal_splitter.setStretchFactor(1, 2)
-        self.proposal_splitter.setSizes([260, 120])
+        self.proposal_splitter.setSizes([160, 80])
         proposal_layout.addLayout(proposal_status_row)
         proposal_layout.addLayout(proposal_metrics_layout)
         proposal_layout.addWidget(proposal_change_card)
@@ -585,7 +639,7 @@ class ChatPage(QWidget):
         self.blueprint_view = QTextBrowser()
         self.blueprint_view.setObjectName("BlueprintViewer")
         self.blueprint_view.setOpenExternalLinks(False)
-        self.blueprint_view.setMinimumHeight(180)
+        self.blueprint_view.setMinimumHeight(80)
         blueprint_canvas_layout.addWidget(blueprint_canvas_title)
         blueprint_canvas_layout.addWidget(self.blueprint_view, 1)
 
@@ -601,7 +655,7 @@ class ChatPage(QWidget):
         self.blueprint_splitter.addWidget(self.blueprint_detail_splitter)
         self.blueprint_splitter.setStretchFactor(0, 5)
         self.blueprint_splitter.setStretchFactor(1, 4)
-        self.blueprint_splitter.setSizes([420, 320])
+        self.blueprint_splitter.setSizes([200, 400])
 
         blueprint_layout.addWidget(blueprint_overview_card)
         blueprint_layout.addWidget(self.blueprint_splitter, 1)
@@ -705,7 +759,7 @@ class ChatPage(QWidget):
         environment_title.setObjectName("SectionTitle")
         environment_layout.addWidget(environment_title)
         environment_layout.addWidget(self.environment_tabs, 1)
-        sidebar_body_layout.addWidget(environment_card, 1)
+        sidebar_body_layout.addWidget(environment_card)
 
         self.dialogue_workspace_layout.insertWidget(1, self.workflow_card)
         right_layout.addLayout(sidebar_title_row)
@@ -1059,7 +1113,7 @@ class ChatPage(QWidget):
     def _refresh_sidebar_meta(self) -> None:
         model_text = str(self.profile_summary_text).replace("模型：", "", 1).strip()
         project_text = str(self.project_summary_text).replace("工程：", "", 1).strip()
-        compact_model = self._clip_single_line_text(model_text or "未配置", max_chars=26)
+        compact_model = self._clip_single_line_text(model_text or "未配置", max_chars=38)
         compact_project = (
             self._summarize_path_for_ui(project_text, max_chars=24)
             if project_text and project_text != "未打开"
@@ -1174,12 +1228,17 @@ class ChatPage(QWidget):
         self.negotiation_option_buttons = []
         options = [dict(item) for item in self.pending_negotiation_options if isinstance(item, dict)]
         self.negotiation_options_widget.setVisible(bool(options))
+        if options:
+            hint = QLabel("点击选择一个折中方案，或在下方修改意见框中自定义：")
+            hint.setObjectName("SectionHint")
+            hint.setWordWrap(True)
+            self.negotiation_options_layout.addWidget(hint)
         for option in options[:3]:
             title = str(option.get("title", "")).strip() or "建议方案"
             summary = str(option.get("summary", "")).strip()
             feedback = str(option.get("feedback", "")).strip()
             button = QPushButton(title)
-            button.setObjectName("GhostButton")
+            button.setObjectName("NegotiationOptionButton")
             if summary:
                 button.setToolTip(summary)
             button.clicked.connect(
@@ -1211,11 +1270,15 @@ class ChatPage(QWidget):
             self.pending_change_preview or self.pending_file_change_preview or self.pending_negotiation_options
         )
         feedback_visible = pending_visible or bool(self.proposal_feedback_input.toPlainText().strip())
+        in_negotiate = pending_visible and self.pending_review_kind == "negotiate"
         self.context_actions_card.setVisible(has_context_actions)
         self.context_timeline_card.setVisible(has_timeline and has_project)
         self.blueprint_detail_splitter.setVisible(pending_visible)
         self.proposal_change_card.setVisible(change_visible)
-        self.proposal_feedback_card.setVisible(feedback_visible)
+        # 协商模式：内联卡片处理选项和反馈，侧边栏只保留状态徽章和回退按钮
+        self.proposal_change_card.setVisible(change_visible and not in_negotiate)
+        self.proposal_feedback_card.setVisible(feedback_visible and not in_negotiate)
+        self.proposal_summary_card.setVisible(not in_negotiate)
         self.proposal_actions_widget.setVisible(pending_visible)
 
     def _load_project_ir_payload(self) -> dict[str, object]:
@@ -1315,7 +1378,7 @@ class ChatPage(QWidget):
                 )
             cards.append(
                 "<div style=\"background:#1C1C1F; border:1px solid rgba(255,255,255,0.08); border-radius:14px; "
-                "padding:14px; min-height:128px;\">"
+                "padding:14px;\">"
                 f"<div style=\"color:#FAFAFA; font-size:14px; font-weight:600; margin-bottom:4px;\">{escape(normalized_title)}</div>"
                 f"<div style=\"color:#71717A; font-size:12px; margin-bottom:10px;\">{escape(subtitle)}</div>"
                 f"<div>{badge_html}</div>{note_html}</div>"
@@ -1418,12 +1481,26 @@ class ChatPage(QWidget):
         header_html = "<br>".join(escape(item) for item in header_lines if item)
         if not header_html:
             header_html = "当前还没有成型的规划结果。先在左侧发需求，中央这里会切成引脚蓝图。"
-        cards_html = "".join(cards)
+        # Build a 2-column table layout compatible with QTextBrowser (no CSS Grid support)
+        rows_html = ""
+        card_list = cards
+        for i in range(0, len(card_list), 2):
+            left = card_list[i]
+            right = card_list[i + 1] if i + 1 < len(card_list) else ""
+            right_td = (
+                f"<td width=\"50%\" style=\"padding:0 0 10px 5px; vertical-align:top;\">{right}</td>"
+                if right else
+                "<td width=\"50%\"></td>"
+            )
+            rows_html += (
+                f"<tr><td width=\"50%\" style=\"padding:0 5px 10px 0; vertical-align:top;\">{left}</td>"
+                f"{right_td}</tr>"
+            )
+        cards_html = f"<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">{rows_html}</table>" if rows_html else ""
         return (
             "<div style=\"color:#E4E4E7;\">"
             f"<div style=\"margin-bottom:14px; color:#A1A1AA; line-height:1.7;\">{header_html}</div>"
-            "<div style=\"display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;\">"
-            f"{cards_html}</div></div>"
+            f"{cards_html}</div>"
         )
 
     def _refresh_workspace_views(self) -> None:
@@ -1459,9 +1536,9 @@ class ChatPage(QWidget):
                     for signal, pin in pins.items():
                         derived_assignments.append({"signal": signal, "pin": pin})
             assignments = derived_assignments
-        self.blueprint_chip_value.setText(self._clip_single_line_text(chip, 16))
+        self.blueprint_chip_value.setText(self._clip_single_line_text(chip, 22))
         self.blueprint_chip_value.setToolTip(chip)
-        self.blueprint_board_value.setText(self._clip_single_line_text(board, 16))
+        self.blueprint_board_value.setText(self._clip_single_line_text(board, 22))
         self.blueprint_board_value.setToolTip(board)
         self.blueprint_modules_value.setText(str(len(modules)))
         self.blueprint_assignments_value.setText(str(len(assignments)))
@@ -1796,12 +1873,18 @@ class ChatPage(QWidget):
         self.workspace_splitter.setSizes([center_width, sidebar_width])
 
     def _set_sidebar_panel_collapsed(self, collapsed: bool) -> None:
-        self.sidebar_panel_collapsed = False
-        self.sidebar_body.setVisible(True)
-        self.sidebar_title_label.setVisible(True)
-        self.sidebar_toggle_button.setText("‹")
-        self.sidebar_toggle_button.setToolTip("中央工作区固定展开")
-        self._update_sidebar_for_current_tab()
+        self.sidebar_panel_collapsed = collapsed
+        self.sidebar_body.setVisible(not collapsed)
+        self.sidebar_title_label.setVisible(not collapsed)
+        if collapsed:
+            self.sidebar_toggle_button.setText("›")
+            self.sidebar_toggle_button.setToolTip("展开方案面板")
+            self.right_panel.setMinimumWidth(48)
+            self.right_panel.setMaximumWidth(48)
+        else:
+            self.sidebar_toggle_button.setText("‹")
+            self.sidebar_toggle_button.setToolTip("收起方案面板")
+            self._update_sidebar_for_current_tab()
 
     def _toggle_sidebar_panel(self) -> None:
         self._set_sidebar_panel_collapsed(not self.sidebar_panel_collapsed)
@@ -2019,6 +2102,7 @@ class ChatPage(QWidget):
             if widget is not None:
                 widget.deleteLater()
         self.active_assistant_bubble = None
+        self._active_negotiation_card = None
 
     def _rebuild_message_bubbles(self) -> None:
         self._clear_message_bubbles()
@@ -2109,6 +2193,7 @@ class ChatPage(QWidget):
         self._refresh_workspace_views()
 
     def clear_pending_proposal(self) -> None:
+        self._remove_negotiation_inline_card()
         self._pending_proposal_state = PendingProposalState()
         self.pending_graph_session = None
         self.proposal_status_label.set_status("等待需求", "neutral")
@@ -2309,6 +2394,7 @@ class ChatPage(QWidget):
 
         self.chat_status.set_status("请求中", "warning")
         self.send_button.setEnabled(False)
+        self.send_button.setToolTip("正在处理中，请等待完成")
         self.active_assistant_bubble = self._append_message("assistant", "")
         self.chat_thread = ChatStreamThread(profile, messages)
         self.chat_thread.chunk.connect(self._on_chat_chunk)
@@ -2319,6 +2405,7 @@ class ChatPage(QWidget):
     def _start_proposal_workflow(self, profile: LlmProfile, text: str, attachments) -> None:
         self.chat_status.set_status("整理方案中", "warning")
         self.send_button.setEnabled(False)
+        self.send_button.setToolTip("正在处理中，请等待完成")
         self.loading_overlay.show_with_text("整理方案中")
         self._append_thread_timeline_event("提案", "进行中", "开始整理模块、板子和接线方案")
         self.active_assistant_bubble = self._append_message(
@@ -2353,6 +2440,7 @@ class ChatPage(QWidget):
         }.get(action, "执行本地工作流")
         self.chat_status.set_status("执行中", "warning")
         self.send_button.setEnabled(False)
+        self.send_button.setToolTip("正在处理中，请等待完成")
         self.loading_overlay.show_with_text(action_label)
         self._append_thread_timeline_event(action_label, "进行中", f"开始执行 {action_label}")
         self.active_assistant_bubble = self._append_message(
@@ -2392,6 +2480,7 @@ class ChatPage(QWidget):
 
         self.chat_status.set_status("已整理方案" if proposal_ready else "方案失败", "success" if proposal_ready else "error")
         self.send_button.setEnabled(True)
+        self.send_button.setToolTip("Ctrl+Enter 发送")
         if self.active_assistant_bubble is None:
             self.active_assistant_bubble = self._append_message("assistant", "")
         self.active_assistant_bubble.set_text(proposal_message)
@@ -2433,6 +2522,7 @@ class ChatPage(QWidget):
                 self.chat_status.set_status("等待协商", "warning")
                 self.proposal_status_label.set_status("等待协商", "warning")
                 self.confirm_proposal_button.setText("采纳当前方案并重算")
+                self._show_negotiation_inline_card(self.pending_negotiation_options)
         else:
             self._append_thread_timeline_event("提案", "失败", "方案整理未通过，请查看错误摘要", persist=False)
             self._update_engineering_state(
@@ -2472,6 +2562,7 @@ class ChatPage(QWidget):
             self.chat_status.set_status("协商重算中", "warning")
             self.proposal_status_label.set_status("正在重算", "warning")
             self.send_button.setEnabled(False)
+            self.send_button.setToolTip("正在处理中，请等待完成")
             self.confirm_proposal_button.setEnabled(False)
             self.revise_proposal_button.setEnabled(False)
             self.clear_proposal_button.setEnabled(False)
@@ -2506,6 +2597,7 @@ class ChatPage(QWidget):
             return
         self.chat_status.set_status("生成中", "warning")
         self.send_button.setEnabled(False)
+        self.send_button.setToolTip("正在处理中，请等待完成")
         self.confirm_proposal_button.setEnabled(False)
         self.revise_proposal_button.setEnabled(False)
         self.clear_proposal_button.setEnabled(False)
@@ -2538,6 +2630,7 @@ class ChatPage(QWidget):
         self.chat_status.set_status("按意见重算中", "warning")
         self.proposal_status_label.set_status("正在重算", "warning")
         self.send_button.setEnabled(False)
+        self.send_button.setToolTip("正在处理中，请等待完成")
         self.confirm_proposal_button.setEnabled(False)
         self.revise_proposal_button.setEnabled(False)
         self.clear_proposal_button.setEnabled(False)
@@ -2569,6 +2662,7 @@ class ChatPage(QWidget):
 
     def _on_confirmed_generation_finished(self, result) -> None:
         self.send_button.setEnabled(True)
+        self.send_button.setToolTip("Ctrl+Enter 发送")
         self.loading_overlay.hide_overlay()
         values = dict(result.values)
         scaffold = values.get("scaffold_result", {}) or {}
@@ -2834,10 +2928,12 @@ class ChatPage(QWidget):
         self._scroll_to_bottom()
 
     def _make_graph_runtime(self, profile: LlmProfile) -> GraphRuntime:
+        validation = self.chat_renode_checkbox.isChecked()
         return GraphRuntime(
             profile=profile,
             repo_root=REPO_ROOT,
-            enable_runtime_validation=self.chat_renode_checkbox.isChecked(),
+            enable_runtime_validation=validation,
+            generate_makefile=validation,
         )
 
     def _render_confirm_change_message(
@@ -2914,14 +3010,16 @@ class ChatPage(QWidget):
         profile = self._find_profile(profile_id)
         if profile is None:
             return None
+        validation = (
+            self.chat_renode_checkbox.isChecked()
+            if enable_runtime_validation is None
+            else bool(enable_runtime_validation)
+        )
         runtime = GraphRuntime(
             profile=profile,
             repo_root=REPO_ROOT,
-            enable_runtime_validation=(
-                self.chat_renode_checkbox.isChecked()
-                if enable_runtime_validation is None
-                else bool(enable_runtime_validation)
-            ),
+            enable_runtime_validation=validation,
+            generate_makefile=validation,
         )
         session = STM32ProjectGraphSession(runtime)
         snapshot = session.get_state(resolved_graph_thread_id)
@@ -2938,6 +3036,7 @@ class ChatPage(QWidget):
     def _on_chat_complete(self) -> None:  # pragma: no cover - GUI runtime path
         self.chat_status.set_status("完成", "success")
         self.send_button.setEnabled(True)
+        self.send_button.setToolTip("Ctrl+Enter 发送")
         self.loading_overlay.hide_overlay()
         if self.active_assistant_bubble is not None:
             self._record_assistant_message(self.active_assistant_bubble._raw_text)
@@ -2946,6 +3045,7 @@ class ChatPage(QWidget):
     def _on_agent_workflow_finished(self, result) -> None:
         self.chat_status.set_status("完成" if result.ok else "失败", "success" if result.ok else "error")
         self.send_button.setEnabled(True)
+        self.send_button.setToolTip("Ctrl+Enter 发送")
         self.loading_overlay.hide_overlay()
         if self.active_assistant_bubble is None:
             self.active_assistant_bubble = self._append_message("assistant", "")
@@ -2987,6 +3087,7 @@ class ChatPage(QWidget):
         self.chat_status.set_status("失败", "error")
         self.proposal_status_label.set_status("处理失败", "error")
         self.send_button.setEnabled(True)
+        self.send_button.setToolTip("Ctrl+Enter 发送")
         self.loading_overlay.hide_overlay()
         if self.active_assistant_bubble is None:
             self.active_assistant_bubble = self._append_message("assistant", "")
@@ -3008,10 +3109,28 @@ class ChatPage(QWidget):
     def _on_chat_failed(self, details: str) -> None:  # pragma: no cover - GUI runtime path
         self.chat_status.set_status("失败", "error")
         self.send_button.setEnabled(True)
+        self.send_button.setToolTip("Ctrl+Enter 发送")
         self.loading_overlay.hide_overlay()
         if self.active_assistant_bubble is None:
             self.active_assistant_bubble = self._append_message("assistant", "")
-        self.active_assistant_bubble.set_text("调用模型失败，请检查连接、API Key 或接口格式。\n\n" + details)
+        profile = self._current_profile()
+        profile_hint = ""
+        if profile is not None:
+            profile_hint = f"\n\n**当前模型配置**: {profile.name} ({profile.base_url or 'default'})"
+        details_lower = str(details).lower()
+        if "401" in details or "unauthorized" in details_lower or "api_key" in details_lower:
+            guidance = "API Key 无效或已过期，请在「配置」页检查对应模型的 API Key。"
+        elif "timeout" in details_lower or "timed out" in details_lower:
+            guidance = "请求超时，请检查网络连接，或尝试切换到响应更快的模型。"
+        elif "connection" in details_lower or "connect" in details_lower:
+            guidance = "无法连接到模型服务，请检查网络或确认 API 地址是否正确。"
+        elif "404" in details or "not found" in details_lower:
+            guidance = "模型接口地址或模型名称有误，请在「配置」页检查 Base URL 和 Model。"
+        elif "429" in details or "rate" in details_lower:
+            guidance = "请求频率过高，请稍后再试。"
+        else:
+            guidance = "调用模型失败，请检查连接、API Key 或接口配置。"
+        self.active_assistant_bubble.set_text(f"{guidance}{profile_hint}\n\n```\n{details.strip()}\n```")
         self._record_assistant_message(self.active_assistant_bubble.text_label.text())
         self.chat_thread = None
         self._scroll_to_bottom()
@@ -3037,6 +3156,27 @@ class ChatPage(QWidget):
     def _append_system_message(self, text: str) -> None:
         bubble = self._append_message("assistant", text)
         bubble.role_label.setText("系统")
+
+    def _show_negotiation_inline_card(self, options: list) -> None:
+        self._remove_negotiation_inline_card()
+
+        def _on_submit(feedback: str) -> None:
+            if not feedback:
+                from PySide6.QtWidgets import QMessageBox
+                QMessageBox.information(self, "请填写修改意见", "请先选择一个建议方案，或在输入框中写修改意见。")
+                return
+            self.proposal_feedback_input.setPlainText(feedback)
+            self.confirm_pending_proposal()
+
+        card = NegotiationInlineCard(options, _on_submit, parent=self.messages_host)
+        self._active_negotiation_card = card
+        self.messages_layout.insertWidget(self.messages_layout.count() - 1, card)
+        self._scroll_to_bottom()
+
+    def _remove_negotiation_inline_card(self) -> None:
+        if self._active_negotiation_card is not None:
+            self._active_negotiation_card.deleteLater()
+            self._active_negotiation_card = None
 
     def _scroll_to_bottom(self) -> None:  # pragma: no cover - GUI runtime path
         scroll_bar = self.scroll_area.verticalScrollBar()

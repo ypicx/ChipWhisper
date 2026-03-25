@@ -57,8 +57,9 @@ PATH_LABELS = {
     "stm32cubemx_install_path": "STM32CubeMX 安装目录",
     "stm32cube_repository_path": "STM32Cube Repository",
     "stm32cube_f1_package_path": "STM32Cube FW_F1 固件包",
-    "renode_exe_path": "Renode executable",
     "stm32cube_g4_package_path": "STM32Cube FW_G4 固件包",
+    "renode_exe_path": "Renode executable",
+    "arm_gcc_path": "ARM GCC (arm-none-eabi-gcc)",
 }
 
 class SettingsPage(QWidget):

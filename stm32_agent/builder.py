@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Protocol, runtime_checkable
+from typing import Dict, Protocol, runtime_checkable
 
+from .gcc_builder import build_gcc_project, doctor_gcc_project
 from .keil_builder import KeilBuildResult, KeilDoctorResult, build_keil_project, doctor_keil_project
 
 ProjectBuildResult = KeilBuildResult
@@ -31,6 +32,28 @@ class ProjectBuilderBackend(Protocol):
         ...
 
 
+class GccProjectBuilderBackend:
+    descriptor = BuilderDescriptor(
+        kind="gcc",
+        display_name="ARM GCC",
+        supported_project_files=("Makefile",),
+    )
+
+    def supports_project(self, project_path: str | Path) -> bool:
+        path = Path(str(project_path or "")).expanduser()
+        if path.name == "Makefile":
+            return True
+        if path.is_dir():
+            return (path / "Makefile").exists()
+        return False
+
+    def doctor_project(self, project_path: str | Path, **kwargs) -> ProjectDoctorResult:
+        return doctor_gcc_project(project_path, **kwargs)
+
+    def build_project(self, project_path: str | Path, **kwargs) -> ProjectBuildResult:
+        return build_gcc_project(project_path, **kwargs)
+
+
 class KeilProjectBuilderBackend:
     descriptor = BuilderDescriptor(
         kind="keil",
@@ -55,6 +78,7 @@ class KeilProjectBuilderBackend:
 
 _BUILDERS: Dict[str, ProjectBuilderBackend] = {
     "keil": KeilProjectBuilderBackend(),
+    "gcc": GccProjectBuilderBackend(),
 }
 
 

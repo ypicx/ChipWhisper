@@ -269,7 +269,9 @@ class WorkflowDot(QLabel):
 
 
 class LoadingOverlay(QWidget):
-    """Semi-transparent overlay with pulsing loading text."""
+    """Semi-transparent overlay with pulsing loading text and optional cancel."""
+
+    cancel_requested = Signal()
 
     def __init__(self, parent: QWidget | None = None):
         super().__init__(parent)
@@ -277,19 +279,49 @@ class LoadingOverlay(QWidget):
         self.setAttribute(Qt.WA_TransparentForMouseEvents, False)
         layout = QVBoxLayout(self)
         layout.setAlignment(Qt.AlignCenter)
+
+        container = QFrame()
+        container.setObjectName("LoadingLabel")
+        container_layout = QVBoxLayout(container)
+        container_layout.setAlignment(Qt.AlignCenter)
+        container_layout.setSpacing(12)
+
         self._label = QLabel("处理中...")
-        self._label.setObjectName("LoadingLabel")
         self._label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self._label)
+        self._label.setStyleSheet("background: transparent; border: none; font-size: 15px; font-weight: 600;")
+        container_layout.addWidget(self._label)
+
+        self._detail_label = QLabel("")
+        self._detail_label.setAlignment(Qt.AlignCenter)
+        self._detail_label.setStyleSheet("background: transparent; border: none; font-size: 12px; color: #A1A1AA;")
+        self._detail_label.hide()
+        container_layout.addWidget(self._detail_label)
+
+        self._elapsed_label = QLabel("")
+        self._elapsed_label.setAlignment(Qt.AlignCenter)
+        self._elapsed_label.setStyleSheet("background: transparent; border: none; font-size: 11px; color: #71717A;")
+        self._elapsed_label.hide()
+        container_layout.addWidget(self._elapsed_label)
+
+        layout.addWidget(container)
+
         self._pulse_timer = QTimer(self)
         self._pulse_dots = 0
-        self._pulse_timer.timeout.connect(self._update_dots)
+        self._elapsed_seconds = 0
+        self._pulse_timer.timeout.connect(self._update_pulse)
         self.hide()
 
-    def show_with_text(self, text: str = "处理中") -> None:
+    def show_with_text(self, text: str = "处理中", detail: str = "") -> None:
         self._base_text = text
         self._pulse_dots = 0
+        self._elapsed_seconds = 0
         self._label.setText(text + "...")
+        if detail:
+            self._detail_label.setText(detail)
+            self._detail_label.show()
+        else:
+            self._detail_label.hide()
+        self._elapsed_label.hide()
         if self.parent():
             self.setGeometry(self.parent().rect())
         self.show()
@@ -300,10 +332,15 @@ class LoadingOverlay(QWidget):
         self._pulse_timer.stop()
         self.hide()
 
-    def _update_dots(self) -> None:
+    def _update_pulse(self) -> None:
         self._pulse_dots = (self._pulse_dots + 1) % 4
         dots = "." * (self._pulse_dots + 1)
         self._label.setText(self._base_text + dots)
+        self._elapsed_seconds += 0.5
+        if self._elapsed_seconds >= 5:
+            secs = int(self._elapsed_seconds)
+            self._elapsed_label.setText(f"已等待 {secs} 秒")
+            self._elapsed_label.show()
 
 
 class CodeEditor(QPlainTextEdit):

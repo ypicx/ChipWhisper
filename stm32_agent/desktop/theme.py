@@ -123,6 +123,17 @@ def build_stylesheet() -> str:
     /* 图标/次级幽灵按钮 */
     QPushButton#GhostButton, QToolButton#GhostButton {{ background: transparent; border: none; color: {TEXT_MUTED}; }}
     QPushButton#GhostButton:hover, QToolButton#GhostButton:hover {{ background: {SURFACE_1}; color: {TEXT_PRIMARY}; border-radius: 6px; }}
+    /* 协商选项按钮 — 带可见边框，用于等待协商时的折中方案列表 */
+    QPushButton#NegotiationOptionButton {{
+        background: transparent; border: 1px solid {BORDER_STRONG}; border-radius: 6px;
+        color: {TEXT_SECONDARY}; padding: 6px 10px; text-align: left;
+    }}
+    QPushButton#NegotiationOptionButton:hover {{
+        background: {SURFACE_2}; border-color: {ACCENT}; color: {TEXT_PRIMARY};
+    }}
+    QPushButton#NegotiationOptionButton:pressed {{
+        background: rgba(59, 130, 246, 0.12); border-color: {ACCENT};
+    }}
     QToolButton#PanelToggleButton {{ background: transparent; border: none; color: {TEXT_MUTED}; border-radius: 6px; }}
     QToolButton#PanelToggleButton:hover {{ background: rgba(255,255,255,0.05); color: {TEXT_PRIMARY}; }}
 
@@ -134,6 +145,14 @@ def build_stylesheet() -> str:
     QFrame#WorkspaceSummaryCard, QFrame#BlueprintCanvasCard, QFrame#TerminalDeck,
     QFrame#WorkspaceToolbarCard, QFrame#EnvironmentSidebarCard {{
         background: {SURFACE_1}; border: 1px solid {BORDER}; border-radius: 12px;
+    }}
+
+    /* 协商内联卡片 — 嵌入聊天消息流 */
+    QFrame#NegotiationInlineCard {{
+        background: rgba(245, 158, 11, 0.06);
+        border: 1px solid rgba(245, 158, 11, 0.28);
+        border-radius: 10px;
+        margin: 0px 4px;
     }}
 
     /* 聊天输入框外框聚焦反馈 */

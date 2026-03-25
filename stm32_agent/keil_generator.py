@@ -15,6 +15,7 @@ from .keil_generator_docs import (
     render_generated_readme_v2 as _render_generated_readme_v2,
     render_project_report as _render_project_report,
 )
+from .keil_generator_makefile import render_linker_script, render_makefile
 from .keil_generator_core import (
     render_hal_msp_c_v2 as _render_hal_msp_c_template_v2,
     render_it_c_v2 as _render_it_c_template_v2,
@@ -131,6 +132,7 @@ def scaffold_from_request(
     output_dir: str | Path,
     project_name: str | None = None,
     packs_dir: str | Path | None = None,
+    generate_makefile: bool = False,
     ) -> ScaffoldResult:
     registry = load_catalog(packs_dir)
     plan = plan_request(payload, packs_dir=packs_dir)
@@ -157,7 +159,7 @@ def scaffold_from_request(
     chip = registry.chips[plan.chip]
     generated_files: List[str] = []
     try:
-        generated_files.extend(_write_project_files(plan, output_path, resolved_project_name, chip))
+        generated_files.extend(_write_project_files(plan, output_path, resolved_project_name, chip, generate_makefile=generate_makefile))
     except ValueError as exc:
         return ScaffoldResult(
             feasible=False,
@@ -272,12 +274,12 @@ def _build_project_file_diff_preview(
     return "\n".join(diff_lines)
 
 
-def _write_project_files(plan: PlanResult, root: Path, project_name: str, chip: ChipDefinition) -> List[str]:
+def _write_project_files(plan: PlanResult, root: Path, project_name: str, chip: ChipDefinition, *, generate_makefile: bool = False) -> List[str]:
     generated: List[str] = []
     dirs = _project_directories(root)
     for directory in dirs:
         directory.mkdir(parents=True, exist_ok=True)
-    files_to_write = _build_project_files_to_write(plan, root, project_name, chip)
+    files_to_write = _build_project_files_to_write(plan, root, project_name, chip, generate_makefile=generate_makefile)
 
     for path, content in files_to_write.items():
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -287,7 +289,7 @@ def _write_project_files(plan: PlanResult, root: Path, project_name: str, chip: 
     return generated
 
 
-def _build_project_files_to_write(plan: PlanResult, root: Path, project_name: str, chip: ChipDefinition) -> Dict[Path, str]:
+def _build_project_files_to_write(plan: PlanResult, root: Path, project_name: str, chip: ChipDefinition, *, generate_makefile: bool = False) -> Dict[Path, str]:
     context = _build_codegen_context(plan, chip)
     support = context.support
 
@@ -318,6 +320,17 @@ def _build_project_files_to_write(plan: PlanResult, root: Path, project_name: st
         "MDK-ARM/build_keil.ps1": _render_build_ps1(project_name),
         "MDK-ARM/flash_keil.ps1": _render_flash_ps1(project_name),
     }
+
+    if generate_makefile:
+        rendered_files["Makefile"] = render_makefile(
+            plan,
+            project_name,
+            chip,
+            context.hal_sources,
+            context.app_sources,
+            context.module_sources,
+        )
+        rendered_files["STM32_FLASH.ld"] = render_linker_script(chip)
     return _assemble_project_files_to_write(plan, root, context, rendered_files, chip)
 
 
